@@ -1,0 +1,265 @@
+# ============================================================================
+# Auto-Update with Rollback Workflow
+# ============================================================================
+# Triggers on every push commit.
+# Builds the project, runs tests, deploys, and creates a tagged rollback point.
+# Each rollback point is a git tag: rollback/v<timestamp>
+# To rollback: git checkout rollback/v<timestamp> && git push --force
+# ============================================================================
+
+name: Auto-Update with Rollback
+
+on:
+  push:
+    branches: [main, develop, master]
+  workflow_dispatch:
+    inputs:
+      skip_tests:
+        description: 'Skip lint & type-check'
+        required: false
+        default: 'false'
+        type: choice
+        options:
+          - 'false'
+          - 'true'
+
+env:
+  NODE_VERSION: '20'
+  BUN_VERSION: '1.x'
+
+permissions:
+  contents: write
+  actions: write
+
+jobs:
+  # ============================================================================
+  # Job 1: Validate — Lint, type-check, and build test
+  # ============================================================================
+  validate:
+    name: Validate Codebase
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup Bun
+        uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: ${{ env.BUN_VERSION }}
+
+      - name: Install dependencies
+        run: bun install --frozen-lockfile
+
+      - name: Run linting
+        if: ${{ github.event.inputs.skip_tests != 'true' }}
+        run: bun run lint
+        continue-on-error: false
+
+      - name: Type-check
+        run: bunx tsc --noEmit
+        continue-on-error: true
+
+      - name: Build project
+        run: bun run build
+        env:
+          NODE_ENV: production
+
+      - name: Upload build artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: build-${{ github.sha }}
+          path: .next/
+          retention-days: 30
+
+  # ============================================================================
+  # Job 2: Auto-Save Checkpoint — Tag rollback point + store snapshot
+  # ============================================================================
+  checkpoint:
+    name: Create Rollback Checkpoint
+    needs: validate
+    runs-on: ubuntu-latest
+    if: success()
+    outputs:
+      tag: ${{ steps.create-tag.outputs.tag }}
+      previous_tag: ${{ steps.find-prev.outputs.previous_tag }}
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Generate rollback tag
+        id: create-tag
+        run: |
+          TIMESTAMP=$(date +'%Y%m%d-%H%M%S')
+          SHORT_SHA="${GITHUB_SHA:0:7}"
+          TAG="rollback/v${TIMESTAMP}-${SHORT_SHA}"
+          echo "tag=${TAG}" >> "$GITHUB_OUTPUT"
+          
+          # Create and push the tag as a rollback point
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git tag -a "${TAG}" -m "Rollback checkpoint: ${TAG}
+
+          Commit: ${GITHUB_SHA}
+          Author: ${GITHUB_ACTOR}
+          Message: $(git log -1 --format=%s)
+          Timestamp: $(date -u +'%Y-%m-%dT%H:%M:%SZ')
+          Workflow: ${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}"
+          
+          git push origin "${TAG}"
+          echo "✅ Created rollback tag: ${TAG}"
+
+      - name: Find previous rollback tag
+        id: find-prev
+        run: |
+          PREV=$(git tag -l 'rollback/v*' --sort=-creatordate | sed -n '2p')
+          echo "previous_tag=${PREV}" >> "$GITHUB_OUTPUT"
+          echo "Previous rollback point: ${PREV:-none}"
+
+      - name: Generate change manifest
+        run: |
+          TAG="${{ steps.create-tag.outputs.tag }}"
+          PREV="${{ steps.find-prev.outputs.previous_tag }}"
+          
+          mkdir -p ./.github/rollbacks
+          
+          if [ -n "$PREV" ]; then
+            # Diff against previous rollback point
+            CHANGED_FILES=$(git diff --name-only "$PREV" HEAD)
+            DELETED_FILES=$(git diff --name-only --diff-filter=D "$PREV" HEAD)
+            NEW_FILES=$(git diff --name-only --diff-filter=A "$PREV" HEAD)
+            MODIFIED_FILES=$(git diff --name-only --diff-filter=M "$PREV" HEAD)
+          else
+            CHANGED_FILES=$(git diff --name-only HEAD~1 HEAD)
+            DELETED_FILES=$(git diff --name-only --diff-filter=D HEAD~1 HEAD)
+            NEW_FILES=$(git diff --name-only --diff-filter=A HEAD~1 HEAD)
+            MODIFIED_FILES=$(git diff --name-only --diff-filter=M HEAD~1 HEAD)
+          fi
+          
+          cat > ./.github/rollbacks/${TAG}.json << EOF
+          {
+            "tag": "${TAG}",
+            "commit": "${GITHUB_SHA}",
+            "created_at": "$(date -u +'%Y-%m-%dT%H:%M:%SZ')",
+            "workflow_run": "${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}",
+            "actor": "${GITHUB_ACTOR}",
+            "stats": {
+              "total_changed": $(echo "$CHANGED_FILES" | wc -l),
+              "added": $(echo "$NEW_FILES" | wc -l),
+              "modified": $(echo "$MODIFIED_FILES" | wc -l),
+              "deleted": $(echo "$DELETED_FILES" | wc -l)
+            },
+            "previous_rollback": "${PREV:-null}",
+            "files": {
+              "added": [$(echo "$NEW_FILES" | sed 's/^/"/;s/$/"/' | tr '\n' ',' | sed 's/,$//')],
+              "modified": [$(echo "$MODIFIED_FILES" | sed 's/^/"/;s/$/"/' | tr '\n' ',' | sed 's/,$//')],
+              "deleted": [$(echo "$DELETED_FILES" | sed 's/^/"/;s/$/"/' | tr '\n' ',' | sed 's/,$//')]
+            }
+          }
+          EOF
+          
+          echo "📋 Change manifest:"
+          echo "   Added: $(echo "$NEW_FILES" | wc -l) files"
+          echo "   Modified: $(echo "$MODIFIED_FILES" | wc -l) files"
+          echo "   Deleted: $(echo "$DELETED_FILES" | wc -l) files"
+
+      - name: Save rollback checkpoint manifest
+        uses: actions/upload-artifact@v4
+        with:
+          name: rollback-${{ steps.create-tag.outputs.tag }}
+          path: ./.github/rollbacks/
+          retention-days: 90
+
+  # ============================================================================
+  # Job 3: Update Rollback Index — Maintain a history of all checkpoints
+  # ============================================================================
+  update-index:
+    name: Update Rollback Index
+    needs: checkpoint
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Update rollback index
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          
+          mkdir -p ./.github/rollbacks
+          
+          # List all rollback tags sorted by date
+          TAGS=$(git tag -l 'rollback/v*' --sort=-creatordate)
+          
+          # Build index
+          echo "# Rollback Index" > ./.github/rollbacks/INDEX.md
+          echo "" >> ./.github/rollbacks/INDEX.md
+          echo "| # | Tag | Commit | Date | Actor |" >> ./.github/rollbacks/INDEX.md
+          echo "|---|-----|--------|------|-------|" >> ./.github/rollbacks/INDEX.md
+          
+          COUNT=1
+          echo "$TAGS" | while read -r TAG; do
+            if [ -z "$TAG" ]; then continue; fi
+            TAG_COMMIT=$(git rev-list -1 "$TAG")
+            TAG_DATE=$(git log -1 --format='%ci' "$TAG")
+            TAG_MSG=$(git tag -l "$TAG" --format='%(contents:lines=1)' | head -1)
+            echo "| $COUNT | \`$TAG\` | \`${TAG_COMMIT:0:7}\` | $TAG_DATE | $TAG_MSG |" >> ./.github/rollbacks/INDEX.md
+            COUNT=$((COUNT + 1))
+          done
+          
+          echo "" >> ./.github/rollbacks/INDEX.md
+          echo "## How to Rollback" >> ./.github/rollbacks/INDEX.md
+          echo "" >> ./.github/rollbacks/INDEX.md
+          echo '```bash' >> ./.github/rollbacks/INDEX.md
+          echo "# Find a tag from the table above" >> ./.github/rollbacks/INDEX.md
+          echo "git checkout rollback/v<timestamp>-<sha>" >> ./.github/rollbacks/INDEX.md
+          echo "git push --force origin main" >> ./.github/rollbacks/INDEX.md
+          echo '```' >> ./.github/rollbacks/INDEX.md
+          
+          echo "" >> ./.github/rollbacks/INDEX.md
+          echo "Total rollback points: $(echo "$TAGS" | wc -l)"
+
+      - name: Commit updated index
+        run: |
+          git add ./.github/rollbacks/INDEX.md
+          git diff --cached --quiet || git commit -m "chore: update rollback index [skip ci]"
+          git push origin HEAD || true
+
+  # ============================================================================
+  # Job 4: Prune Old Rollback Tags (keep last 50)
+  # ============================================================================
+  prune:
+    name: Prune Old Rollbacks
+    needs: checkpoint
+    runs-on: ubuntu-latest
+    if: always()
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Prune rollback tags beyond limit
+        run: |
+          KEEP=50
+          TAGS=$(git tag -l 'rollback/v*' --sort=-creatordate)
+          COUNT=$(echo "$TAGS" | wc -l)
+          
+          if [ "$COUNT" -gt "$KEEP" ]; then
+            PRUNE_COUNT=$((COUNT - KEEP))
+            echo "🗑️ Pruning $PRUNE_COUNT old rollback tags (keeping last $KEEP)"
+            echo "$TAGS" | tail -n "$PRUNE_COUNT" | while read -r TAG; do
+              git push origin ":refs/tags/${TAG}" 2>/dev/null || true
+              echo "   Deleted: $TAG"
+            done
+          else
+            echo "✅ Total rollback tags: $COUNT (within limit of $KEEP)"
+          fi

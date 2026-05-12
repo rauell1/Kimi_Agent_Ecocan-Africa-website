@@ -1,0 +1,89 @@
+# =============================================================
+# SYNC BUN LOCKFILE
+# Runs automatically whenever package.json changes on main,
+# or can be triggered manually.
+#
+# Purpose: keeps bun.lock in sync with package.json
+# so that `bun install --frozen-lockfile` in CI workflows
+# remains deterministic.
+#
+# How it works:
+#   1. Checks out main
+#   2. Runs `bun install` (refreshes bun.lock from package.json)
+#   3. If bun.lock changed, commits and pushes it with [skip ci]
+#      so it does NOT re-trigger safe-rollback or workflow-guard
+#
+# ── DEPENDENCY ADVISORY ──────────────────────────────────────────────────
+# This workflow uses:
+#   - actions/checkout@v4
+#   - oven-sh/setup-bun@v2 (bun-version: latest)
+# Keep Bun setup current with your CI toolchain.
+# =============================================================
+name: Sync Bun Lockfile
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'package.json'
+  workflow_dispatch:
+
+concurrency:
+  group: maintenance-auto-commits-${{ github.ref }}
+  cancel-in-progress: false
+
+permissions:
+  contents: write
+
+jobs:
+  sync:
+    name: Sync bun.lock
+    if: github.event_name == 'workflow_dispatch' || (github.event_name == 'push' && github.actor != 'github-actions[bot]' && !contains(github.event.head_commit.message, '[skip ci]'))
+    runs-on: ubuntu-latest
+    env:
+      FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: latest
+          cache: true
+
+      - name: Configure git
+        run: |
+          set -euo pipefail
+          git config user.name  "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+      - name: Sync bun.lock
+        run: bun install
+
+      - name: Commit if changed
+        run: |
+          set -euo pipefail
+          if git diff --quiet bun.lock; then
+            echo "bun.lock already in sync — nothing to commit."
+            exit 0
+          fi
+
+          git add bun.lock
+          git commit -m "chore(deps): sync bun.lock [skip ci]"
+          for attempt in 1 2 3; do
+            if git pull --rebase origin main && git push origin main; then
+              break
+            fi
+            if [ "$attempt" -eq 3 ]; then
+              echo "::error::Failed to push bun.lock update after 3 attempts."
+              exit 1
+            fi
+          done
+          echo "bun.lock updated and pushed."
+      - name: Job summary
+        if: always()
+        run: |
+          set -euo pipefail
+          echo "## Sync bun.lock job" >> $GITHUB_STEP_SUMMARY
+          echo "Result: \`${{ job.status }}\`" >> $GITHUB_STEP_SUMMARY

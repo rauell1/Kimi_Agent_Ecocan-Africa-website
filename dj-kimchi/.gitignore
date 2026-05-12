@@ -1,0 +1,76 @@
+# Dependencies
+node_modules/
+
+# Build outputs
+.next/
+out/
+dist/
+build/
+
+# Logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# Runtime / process files
+*.pid
+*.seed
+*.pid.lock
+watchdog.pid
+
+# Environment / secrets
+.env
+.env.*
+!.env.example
+env.txt
+
+# OS / editor
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+
+# TypeScript
+*.tsbuildinfo
+next-env.d.ts
+
+# Test and coverage output
+coverage/
+.nyc_output/
+
+# Local databases and backups
+*.db
+*.sqlite
+*.sqlite3
+db/backups/
+
+# Project-specific generated/downloaded content
+download/
+upload/
+
+# Optional local data exports / research dumps
+research_*.json
+search_*.json
+yt_*.json
+mc_search.json
+
+# Python cache (proxy/util scripts)
+__pycache__/
+*.py[cod]
+*.pyo
+
+# Keep sibling repositories and local workspace metadata out of this repo
+/.claude/
+/.cursor/
+/.git.disabled-parent/
+/ai-cv-builder/
+/cv-builder/
+/greenwave-society/
+/openclaude/
+/portfolio/
+/roam-energy-page/
+/safaricharge/
+/safaricharge-website/
+/dj-kimchi/

@@ -1,0 +1,27 @@
+#!/usr/bin/env bash
+# ── KYPW Pre-Commit Hook ──────────────────────────────────
+# Auto-updates rollback.yml and codemap.md before every commit.
+#
+# Setup:
+#   git config core.hooksPath .githooks
+#
+# Skip (if needed):
+#   git commit --no-verify -m "message"
+
+set -euo pipefail
+
+PROJECT_ROOT="$(git rev-parse --show-toplevel)"
+
+echo "🔄 Generating rollback.yml..."
+bun "$PROJECT_ROOT/scripts/generate-rollback.ts" 2>/dev/null || true
+
+echo "🗺️  Generating codemap.md..."
+bun "$PROJECT_ROOT/scripts/generate-codemap.ts" 2>/dev/null || true
+
+# Stage the generated docs if they changed
+if git diff --quiet docs/rollback.yml docs/codemap.md rollback.yml 2>/dev/null; then
+  echo "✅ Docs already up to date"
+else
+  git add docs/rollback.yml docs/codemap.md rollback.yml 2>/dev/null || true
+  echo "✅ Docs updated and staged"
+fi

@@ -1,0 +1,428 @@
+# ============================================================================
+# Repository Mapper Workflow
+# ============================================================================
+# Triggers on every push to scan the entire repository and generate a
+# comprehensive structural map. The map lives in .github/repo-map/ and
+# is auto-committed back to the repository.
+#
+# Generated artifacts:
+#   - .github/repo-map/structure.json  — Full file/directory tree
+#   - .github/repo-map/dependencies.json — Package dependency graph
+#   - .github/repo-map/api-routes.json — All API endpoint signatures
+#   - .github/repo-map/db-schema.json — Prisma database schema
+#   - .github/repo-map/component-tree.md — Visual component hierarchy
+#   - .github/repo-map/README.md — Human-readable summary
+# ============================================================================
+
+name: Repository Mapper
+
+on:
+  push:
+    branches: [main, develop, master]
+  workflow_dispatch:
+    inputs:
+      deep_scan:
+        description: 'Deep scan (include node_modules, .next, etc.)'
+        required: false
+        default: 'false'
+        type: choice
+        options:
+          - 'false'
+          - 'true'
+
+permissions:
+  contents: write
+
+jobs:
+  # ============================================================================
+  # Job 1: Scan Repository Structure
+  # ============================================================================
+  scan:
+    name: Map Repository
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup Bun
+        uses: oven-sh/setup-bun@v2
+
+      - name: Install dependencies
+        run: bun install --frozen-lockfile
+
+      - name: Generate file structure map
+        run: |
+          mkdir -p .github/repo-map
+          
+          DEEP="${{ github.event.inputs.deep_scan }}"
+          
+          # Build tree excluding common noise directories
+          if [ "$DEEP" = "true" ]; then
+            TREE=$(find . -type f \
+              | grep -v '\.git/' \
+              | grep -v 'node_modules/' \
+              | grep -v '\.next/' \
+              | grep -v 'db/custom.db' \
+              | grep -v 'bun.lock' \
+              | grep -v '.github/repo-map/' \
+              | sort)
+          else
+            TREE=$(find . -type f \
+              | grep -v '\.git/' \
+              | grep -v 'node_modules/' \
+              | grep -v '\.next/' \
+              | grep -v 'db/custom.db' \
+              | grep -v 'bun.lock' \
+              | grep -v '.github/repo-map/' \
+              | grep -v '\.svg$' \
+              | grep -v '\.ico$' \
+              | sort)
+          fi
+          
+          # Build JSON structure
+          echo "[" > .github/repo-map/structure.json
+          FIRST=true
+          echo "$TREE" | while read -r FILE; do
+            if [ -z "$FILE" ]; then continue; fi
+            
+            REL_PATH="${FILE#./}"
+            DIR=$(dirname "$REL_PATH")
+            EXT="${REL_PATH##*.}"
+            SIZE=$(stat -c%s "$FILE" 2>/dev/null || echo "0")
+            HASH=$(git hash-object "$FILE" 2>/dev/null || echo "unknown")
+            LAST_MODIFIED=$(git log -1 --format='%ci' -- "$FILE" 2>/dev/null || echo "unknown")
+            
+            if [ "$FIRST" = true ]; then FIRST=false; else echo ","; fi
+            
+            printf '  {"path":"%s","dir":"%s","ext":"%s","size":%s,"hash":"%s","last_modified":"%s"}' \
+              "$REL_PATH" "$DIR" "$EXT" "$SIZE" "$HASH" "$LAST_MODIFIED"
+          done >> .github/repo-map/structure.json
+          echo "" >> .github/repo-map/structure.json
+          echo "]" >> .github/repo-map/structure.json
+          
+          TOTAL=$(echo "$TREE" | wc -l)
+          TOTAL_SIZE=$(echo "$TREE" | while read -r F; do stat -c%s "$F" 2>/dev/null; done | paste -sd+ | bc 2>/dev/null || echo "0")
+          
+          echo "📊 Mapped $TOTAL files (${TOTAL_SIZE} bytes)"
+
+      - name: Generate dependency graph
+        run: |
+          mkdir -p .github/repo-map
+          
+          # Read package.json
+          if [ -f package.json ]; then
+            DEPS=$(cat package.json | python3 -c "
+          import json, sys
+          data = json.load(sys.stdin)
+          deps = {**data.get('dependencies', {}), **data.get('devDependencies', {})}
+          
+          result = {
+            'name': data.get('name', 'unknown'),
+            'version': data.get('version', '0.0.0'),
+            'total_dependencies': len(deps),
+            'categories': {
+              'framework': [k for k,v in deps.items() if any(x in k for x in ['next','react','react-dom'])],
+              'database': [k for k,v in deps.items() if any(x in k for x in ['prisma','@prisma'])],
+              'ui': [k for k,v in deps.items() if any(x in k for x in ['radix','shadcn','lucide','framer','tailwind','class-variance'])],
+              'auth': [k for k,v in deps.items() if any(x in k for x in ['next-auth','bcrypt','supabase','@supabase'])],
+              'data': [k for k,v in deps.items() if any(x in k for x in ['recharts','tanstack','zustand','zod','@hookform','react-hook-form'])],
+              'pdf': [k for k,v in deps.items() if any(x in k for x in ['jspdf'])],
+              'ai': [k for k,v in deps.items() if any(x in k for x in ['z-ai'])],
+              'utilities': [k for k,v in deps.items() if any(x in k for x in ['date-fns','sonner','sharp','dnd-kit','mdxeditor','react-markdown'])],
+              'other': [k for k,v in deps.items() if not any(
+                any(x in k for x in ['next','react','react-dom','prisma','@prisma','radix','shadcn','lucide','framer','tailwind','class-variance','next-auth','bcrypt','supabase','@supabase','recharts','tanstack','zustand','zod','@hookform','react-hook-form','jspdf','z-ai','date-fns','sonner','sharp','dnd-kit','mdxeditor','react-markdown'])
+              )]
+            }
+          }
+          print(json.dumps(result, indent=2))
+          " 2>/dev/null || echo '{"error":"failed to parse"}')
+          
+            echo "$DEPS" > .github/repo-map/dependencies.json
+            echo "📦 Dependencies mapped"
+          fi
+
+      - name: Generate API routes map
+        run: |
+          mkdir -p .github/repo-map
+          
+          echo "[" > .github/repo-map/api-routes.json
+          FIRST=true
+          
+          # Find all route.ts files in src/app/api
+          for ROUTE_FILE in $(find src/app/api -name "route.ts" -type f 2>/dev/null | sort); do
+            ROUTE_PATH=$(echo "$ROUTE_FILE" | sed 's|src/app||;s|/route\.ts$||;s|\[|{|g;s|\]|}|g')
+            
+            # Extract HTTP methods from exports
+            METHODS=$(grep -oE 'export (async )?function (GET|POST|PUT|PATCH|DELETE|HEAD|OPTIONS)' "$ROUTE_FILE" 2>/dev/null | grep -oE '(GET|POST|PUT|PATCH|DELETE|HEAD|OPTIONS)' | sort -u)
+            
+            # Extract first line of docstring or first meaningful comment
+            DESCRIPTION=$(grep -m1 '^[[:space:]]*//' "$ROUTE_FILE" 2>/dev/null | sed 's/^[[:space:]]*\/\/ *//' || echo "")
+            
+            if [ -z "$DESCRIPTION" ]; then
+              # Try extracting from a comment above the first export
+              DESCRIPTION=$(grep -B3 'export' "$ROUTE_FILE" 2>/dev/null | grep '//' | head -1 | sed 's/^[[:space:]]*\/\/ *//' || echo "")
+            fi
+            
+            # Check for authentication
+            HAS_AUTH=$(grep -q 'getUser\|cookies\|requireAuth\|getSession' "$ROUTE_FILE" 2>/dev/null && echo "true" || echo "false")
+            
+            # Check for Prisma usage
+            USES_DB=$(grep -q 'db\.\|prisma\|Prisma' "$ROUTE_FILE" 2>/dev/null && echo "true" || echo "false")
+            
+            METHODS_STR=$(echo "$METHODS" | tr '\n' ',' | sed 's/,$//;s/^/["/;s/$/"]/' | sed 's/,/","/g')
+            
+            if [ "$FIRST" = true ]; then FIRST=false; else echo ","; fi
+            
+            printf '  {"path":"%s","methods":%s,"file":"%s","description":"%s","auth":%s,"uses_db":%s}' \
+              "$ROUTE_PATH" "$METHODS_STR" "$ROUTE_FILE" "$DESCRIPTION" "$HAS_AUTH" "$USES_DB"
+          done >> .github/repo-map/api-routes.json
+          echo "" >> .github/repo-map/api-routes.json
+          echo "]" >> .github/repo-map/api-routes.json
+          
+          ROUTE_COUNT=$(find src/app/api -name "route.ts" -type f 2>/dev/null | wc -l)
+          echo "🌐 Mapped $ROUTE_COUNT API routes"
+
+      - name: Generate database schema map
+        run: |
+          mkdir -p .github/repo-map
+          
+          if [ -f prisma/schema.prisma ]; then
+            cat prisma/schema.prisma | python3 -c "
+          import json, sys, re
+
+          content = sys.stdin.read()
+
+          # Extract datasource
+          ds_match = re.search(r'datasource\s+\w+\s*\{[^}]+\}', content)
+          datasource = {}
+          if ds_match:
+              for line in ds_match.group().split('\n'):
+                  if '=' in line:
+                      k, v = line.split('=', 1)
+                      datasource[k.strip()] = v.strip().strip('\"')
+
+          # Extract models
+          models = []
+          current_model = None
+          current_field = None
+
+          for line in content.split('\n'):
+              line = line.strip()
+              
+              model_match = re.match(r'^model\s+(\w+)', line)
+              if model_match:
+                  current_model = {'name': model_match.group(1), 'fields': [], 'relations': []}
+                  continue
+              
+              if line == '}' and current_model:
+                  models.append(current_model)
+                  current_model = None
+                  continue
+              
+              if current_model and line and not line.startswith('//'):
+                  field_match = re.match(r'^(\w+)\s+(\w+)', line)
+                  if field_match:
+                      fname = field_match.group(1)
+                      ftype = field_match.group(2)
+                      is_optional = '?' in line
+                      is_list = '[]' in line
+                      has_default = '@default' in line or '@id' in line
+                      is_unique = '@unique' in line
+                      is_index = '@@index' in line
+                      
+                      field_info = {
+                          'name': fname,
+                          'type': ftype.replace('[]', ''),
+                          'optional': is_optional,
+                          'list': is_list,
+                          'has_default': has_default,
+                          'unique': is_unique
+                      }
+                      current_model['fields'].append(field_info)
+                      
+                      if '@relation' in line:
+                          rel_match = re.search(r'references:\s*\[(\w+)\]', line)
+                          if rel_match:
+                              current_model['relations'].append({
+                                  'field': fname,
+                                  'references': rel_match.group(1)
+                              })
+
+          result = {
+              'datasource': datasource,
+              'total_models': len(models),
+              'models': models
+          }
+          print(json.dumps(result, indent=2))
+          " > .github/repo-map/db-schema.json 2>/dev/null
+          
+            MODEL_COUNT=$(grep -c "^model " prisma/schema.prisma 2>/dev/null || echo "0")
+            echo "🗄️ Mapped $MODEL_COUNT database models"
+          else
+            echo '{"error":"no prisma schema found"}' > .github/repo-map/db-schema.json
+            echo "⚠️ No Prisma schema found"
+          fi
+
+      - name: Generate component tree (markdown)
+        run: |
+          mkdir -p .github/repo-map
+          
+          echo "# Component Architecture" > .github/repo-map/component-tree.md
+          echo "" >> .github/repo-map/component-tree.md
+          echo "Generated: $(date -u +'%Y-%m-%d %H:%M UTC') | Commit: \`${GITHUB_SHA:0:7}\`" >> .github/repo-map/component-tree.md
+          echo "" >> .github/repo-map/component-tree.md
+          
+          # Pages
+          echo "## Pages" >> .github/repo-map/component-tree.md
+          echo "" >> .github/repo-map/component-tree.md
+          echo '```' >> .github/repo-map/component-tree.md
+          for f in $(find src/app -name "page.tsx" -o -name "layout.tsx" 2>/dev/null | sort); do
+            REL="${f#src/}"
+            LINES=$(wc -l < "$f")
+            SIZE=$(stat -c%s "$f")
+            echo "📄 $REL ($LINES lines, $SIZE bytes)"
+          done
+          echo '```' >> .github/repo-map/component-tree.md
+          echo "" >> .github/repo-map/component-tree.md
+          
+          # UI Components
+          echo "## UI Components (shadcn/ui)" >> .github/repo-map/component-tree.md
+          echo "" >> .github/repo-map/component-tree.md
+          echo '```' >> .github/repo-map/component-tree.md
+          for f in $(find src/components/ui -name "*.tsx" 2>/dev/null | sort); do
+            REL="${f#src/}"
+            LINES=$(wc -l < "$f")
+            echo "🧩 $REL ($LINES lines)"
+          done
+          echo '```' >> .github/repo-map/component-tree.md
+          echo "" >> .github/repo-map/component-tree.md
+          
+          # Feature Components
+          echo "## Feature Components" >> .github/repo-map/component-tree.md
+          echo "" >> .github/repo-map/component-tree.md
+          echo '```' >> .github/repo-map/component-tree.md
+          for f in $(find src/components -name "*.tsx" ! -path "*/ui/*" 2>/dev/null | sort); do
+            REL="${f#src/}"
+            LINES=$(wc -l < "$f")
+            SIZE=$(stat -c%s "$f")
+            echo "⚡ $REL ($LINES lines, $SIZE bytes)"
+          done
+          echo '```' >> .github/repo-map/component-tree.md
+          echo "" >> .github/repo-map/component-tree.md
+          
+          # Hooks
+          echo "## Custom Hooks" >> .github/repo-map/component-tree.md
+          echo "" >> .github/repo-map/component-tree.md
+          echo '```' >> .github/repo-map/component-tree.md
+          for f in $(find src/hooks -name "*.ts" -o -name "*.tsx" 2>/dev/null | sort); do
+            REL="${f#src/}"
+            LINES=$(wc -l < "$f")
+            echo "🪝 $REL ($LINES lines)"
+          done
+          echo '```' >> .github/repo-map/component-tree.md
+          echo "" >> .github/repo-map/component-tree.md
+          
+          # Lib
+          echo "## Library Utilities" >> .github/repo-map/component-tree.md
+          echo "" >> .github/repo-map/component-tree.md
+          echo '```' >> .github/repo-map/component-tree.md
+          for f in $(find src/lib -name "*.ts" 2>/dev/null | sort); do
+            REL="${f#src/}"
+            LINES=$(wc -l < "$f")
+            echo "📦 $REL ($LINES lines)"
+          done
+          echo '```' >> .github/repo-map/component-tree.md
+          
+          echo "🌳 Component tree generated"
+
+      - name: Generate summary README
+        run: |
+          mkdir -p .github/repo-map
+          
+          # Count stats
+          TOTAL_FILES=$(find . -type f ! -path './.git/*' ! -path './node_modules/*' ! -path './.next/*' ! -name 'bun.lock' ! -name '*.db' ! -path './.github/repo-map/*' | wc -l)
+          TSX_FILES=$(find . -name "*.tsx" ! -path './node_modules/*' ! -path './.next/*' | wc -l)
+          TS_FILES=$(find . -name "*.ts" ! -name "*.tsx" ! -path './node_modules/*' ! -path './.next/*' | wc -l)
+          API_ROUTES=$(find src/app/api -name "route.ts" 2>/dev/null | wc -l)
+          DB_MODELS=$(grep -c "^model " prisma/schema.prisma 2>/dev/null || echo "0")
+          UI_COMPONENTS=$(find src/components/ui -name "*.tsx" 2>/dev/null | wc -l)
+          
+          # Calculate total lines of code
+          TOTAL_LOC=$(find . -name "*.tsx" -o -name "*.ts" -o -name "*.css" | grep -v node_modules | grep -v .next | xargs wc -l 2>/dev/null | tail -1 | awk '{print $1}' || echo "0")
+          
+          cat > .github/repo-map/README.md << README
+          # 🗺️ Repository Map — KYPW Platform
+          
+          > Auto-generated on $(date -u +'%Y-%m-%d %H:%M UTC')  
+          > Commit: \`$GITHUB_SHA\`  
+          > Workflow: [Run #${GITHUB_RUN_NUMBER}](${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID})
+          
+          ---
+          
+          ## Quick Stats
+          
+          | Metric | Value |
+          |--------|-------|
+          | Total files | $TOTAL_FILES |
+          | TypeScript/TSX files | $((TSX_FILES + TS_FILES)) |
+          | Lines of code | ~$TOTAL_LOC |
+          | API routes | $API_ROUTES |
+          | Database models | $DB_MODELS |
+          | UI components | $UI_COMPONENTS |
+          | Framework | Next.js 16 (App Router) |
+          | Database | SQLite + Prisma ORM |
+          | UI Library | shadcn/ui + Tailwind CSS 4 |
+          
+          ## Generated Maps
+          
+          | File | Description |
+          |------|-------------|
+          | \`structure.json\` | Complete file tree with hashes, sizes, and timestamps |
+          | \`dependencies.json\` | Package dependency graph grouped by category |
+          | \`api-routes.json\` | All API endpoint paths, methods, and auth status |
+          | \`db-schema.json\` | Prisma models, fields, relations, and types |
+          | \`component-tree.md\` | Visual component hierarchy |
+          | \`README.md\` | This summary file |
+          
+          ## How It Works
+          
+          This workflow runs on every push to generate an up-to-date map of the repository.
+          The maps are committed back to \`.github/repo-map/\` so they're always in sync.
+          
+          ### Detecting Changes
+          
+          Compare against the previous commit:
+          \`\`\`bash
+          git diff HEAD~1 -- .github/repo-map/structure.json
+          git diff HEAD~1 -- .github/repo-map/api-routes.json
+          git diff HEAD~1 -- .github/repo-map/db-schema.json
+          \`\`\`
+          
+          README
+          
+          echo "📋 Summary README generated"
+
+      - name: Commit repository map
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          
+          git add .github/repo-map/
+          
+          # Only commit if there are actual changes
+          git diff --cached --quiet || git commit -m "chore: update repository map [skip ci]
+
+          Auto-generated by Repository Mapper workflow
+          Commit: ${GITHUB_SHA}
+          Run: ${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}"
+          
+          git push origin HEAD || true
+
+      - name: Upload map artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: repo-map-${{ github.sha }}
+          path: .github/repo-map/
+          retention-days: 60

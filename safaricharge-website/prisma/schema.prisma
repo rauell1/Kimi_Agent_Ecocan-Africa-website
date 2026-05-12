@@ -1,0 +1,363 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+enum UserRole {
+  DRIVER
+  ADMIN
+  FLEET_MANAGER
+  EMPLOYEE
+}
+
+enum SecurityLevel {
+  BASIC        // Basic access - view stations, own profile
+  STANDARD     // Standard access - handle customer queries
+  ELEVATED     // Elevated access - manage stations, view reports
+  MANAGER      // Manager access - full station management
+  SUPERVISOR   // Supervisor access - team management
+}
+
+enum StationStatus {
+  AVAILABLE
+  OCCUPIED
+  OFFLINE
+  MAINTENANCE
+}
+
+enum ConnectorType {
+  CCS2
+  CHADEMO
+  TYPE2
+  TESLA
+}
+
+enum SessionStatus {
+  ACTIVE
+  COMPLETED
+  CANCELLED
+}
+
+enum JobType {
+  SEND_EMAIL
+}
+
+enum JobStatus {
+  PENDING
+  PROCESSING
+  COMPLETED
+  FAILED
+}
+
+model User {
+  id           String   @id @default(cuid())
+  email        String   @unique
+  name         String?
+  password     String
+  role         UserRole @default(DRIVER)
+  avatar       String?
+  phone        String?
+  isEmailVerified Boolean @default(false)
+  subscriptionPlan  String @default("FREE")
+  subscriptionExpiry DateTime?
+  hasPaidAccess Boolean @default(false)
+  accessPermissions String @default("charging_map") // comma-separated
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+  
+  // 2FA fields
+  verificationCode     String?
+  verificationCodeExpiry DateTime?
+  
+  // Password reset
+  resetToken     String?
+  resetTokenExpiry DateTime?
+  
+  // Employee approval fields
+  isApproved       Boolean  @default(true)  // True by default for non-employees
+  securityLevel    SecurityLevel?
+  requestedRole    String?  // What role the employee requested
+  approvedBy       String?  // Admin user ID who approved
+  approvedAt       DateTime?
+  
+  // User blocking
+  isBlocked        Boolean  @default(false)
+  blockedAt        DateTime?
+  blockedBy        String?  // Admin user ID who blocked
+  blockReason      String?
+  
+  // Fleet relation - one fleet manager can own one fleet
+  fleet         Fleet?
+  
+  sessions     ChargingSession[]
+  notifications Notification[]
+  authSessions Session[]
+
+  @@index([role])
+  @@index([isApproved])
+  @@index([isBlocked])
+  @@index([createdAt])
+}
+
+model ChargingStation {
+  id          String        @id @default(cuid())
+  name        String
+  description String?
+  address     String
+  city        String
+  latitude    Float
+  longitude   Float
+  status      StationStatus @default(AVAILABLE)
+  rating      Float         @default(0)
+  reviewCount Int           @default(0)
+  imageUrl    String?
+  isOpen24h   Boolean       @default(true)
+  amenities   String?       // JSON string of amenities
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
+  
+  connectors  Connector[]
+  sessions    ChargingSession[]
+
+  @@index([city, status])
+  @@index([createdAt])
+}
+
+model Connector {
+  id             String        @id @default(cuid())
+  stationId      String
+  type           ConnectorType
+  powerOutput    Float         // kW
+  currentPrice   Float         // price per kWh
+  status         StationStatus @default(AVAILABLE)
+  station        ChargingStation @relation(fields: [stationId], references: [id], onDelete: Cascade)
+  sessions       ChargingSession[]
+
+  @@index([stationId, status])
+  @@index([type, status])
+}
+
+model ChargingSession {
+  id           String        @id @default(cuid())
+  userId       String
+  stationId    String
+  connectorId  String
+  status       SessionStatus @default(ACTIVE)
+  startTime    DateTime      @default(now())
+  endTime      DateTime?
+  energyDelivered Float?     // kWh
+  cost         Float?        // total cost
+  user         User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  station      ChargingStation @relation(fields: [stationId], references: [id], onDelete: Cascade)
+  connector    Connector     @relation(fields: [connectorId], references: [id], onDelete: Cascade)
+
+  @@index([userId, startTime])
+  @@index([stationId, status])
+  @@index([connectorId, status])
+  @@index([status, startTime])
+}
+
+model Notification {
+  id          String   @id @default(cuid())
+  userId      String
+  title       String
+  message     String
+  isRead      Boolean  @default(false)
+  type        String   // "info", "warning", "success"
+  createdAt   DateTime @default(now())
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId, isRead, createdAt])
+}
+
+model AnalyticsData {
+  id          String   @id @default(cuid())
+  stationId   String?
+  metricType  String   // "peak_hours", "energy_usage", "revenue", "utilization"
+  value       Float
+  timestamp   DateTime @default(now())
+  metadata    String?  // JSON for additional data
+
+  @@index([stationId, metricType, timestamp])
+}
+
+// Fleet Management Models
+enum FleetCategory {
+  TAXI           // Taxi services (Uber, Bolt, etc.)
+  DELIVERY       // Delivery services (food, packages)
+  CORPORATE      // Corporate fleet vehicles
+  PUBLIC_TRANSPORT // Matatus, buses
+  RENTAL         // Car rental services
+  PERSONAL       // Personal multi-vehicle management
+  OTHER          // Other categories
+}
+
+enum FleetVehicleStatus {
+  ACTIVE
+  CHARGING
+  MAINTENANCE
+  OFFLINE
+}
+
+model Fleet {
+  id           String   @id @default(cuid())
+  name         String   // Fleet name
+  description  String?
+  category     FleetCategory @default(PERSONAL)
+  ownerId      String   @unique // User ID of FLEET_MANAGER - must be unique for 1:1 relation
+  owner        User     @relation(fields: [ownerId], references: [id])
+  
+  // Contact details
+  contactEmail String?
+  contactPhone String?
+  address      String?
+  city         String?
+  
+  // Stats (computed)
+  totalVehicles    Int     @default(0)
+  activeVehicles   Int     @default(0)
+  totalDistance    Float   @default(0) // km
+  totalEnergy      Float   @default(0) // kWh
+  
+  // Onboarding status
+  isOnboarded      Boolean @default(true)
+  onboardingDate   DateTime @default(now())
+  
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+  
+  vehicles     FleetVehicle[]
+  chargingSessions FleetChargingSession[]
+
+  @@index([ownerId])
+  @@index([category])
+  @@index([createdAt])
+}
+
+model FleetVehicle {
+  id           String   @id @default(cuid())
+  fleetId      String
+  fleet        Fleet    @relation(fields: [fleetId], references: [id], onDelete: Cascade)
+  
+  // Vehicle details
+  plateNumber  String   // Kenyan plate number
+  make         String?  // e.g., Nissan, Toyota, BYD
+  model        String?  // e.g., Leaf, e-NV200
+  year         Int?
+  vin          String?  // Vehicle Identification Number
+  color        String?
+  
+  // EV specifics
+  batteryCapacity Float? // kWh
+  maxRange        Float? // km
+  
+  // Status
+  status       FleetVehicleStatus @default(ACTIVE)
+  currentBatteryLevel Float? // 0-100%
+  currentLocationLat  Float?
+  currentLocationLng  Float?
+  odometer     Float?   // Current odometer reading in km
+  
+  // Assignment
+  assignedDriver String? // Driver name or ID
+  
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+  
+  chargingSessions FleetChargingSession[]
+  
+  @@unique([fleetId, plateNumber])
+  @@index([fleetId, status])
+  @@index([plateNumber])
+}
+
+model FleetChargingSession {
+  id           String   @id @default(cuid())
+  fleetId      String
+  fleet        Fleet    @relation(fields: [fleetId], references: [id], onDelete: Cascade)
+  vehicleId    String
+  vehicle      FleetVehicle @relation(fields: [vehicleId], references: [id], onDelete: Cascade)
+  
+  // Station info
+  stationId    String?
+  stationName  String?
+  
+  // Session details
+  startTime    DateTime @default(now())
+  endTime      DateTime?
+  energyDelivered Float? // kWh
+  cost         Float?    // KES
+  startBattery Float?    // %
+  endBattery   Float?    // %
+  
+  // Location
+  location     String?
+  
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  @@index([fleetId, startTime])
+  @@index([vehicleId, startTime])
+  @@index([createdAt])
+}
+
+model Session {
+  id             String   @id @default(cuid())
+  userId         String
+  tokenHash      String   @unique
+  ipAddress      String?
+  userAgent      String?
+  expiresAt      DateTime
+  lastAccessedAt DateTime @default(now())
+  createdAt      DateTime @default(now())
+  user           User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId, expiresAt])
+  @@index([expiresAt])
+}
+
+model Job {
+  id          String    @id @default(cuid())
+  type        JobType
+  status      JobStatus @default(PENDING)
+  payload     String
+  attempts    Int       @default(0)
+  maxAttempts Int       @default(3)
+  scheduledFor DateTime @default(now())
+  lockedAt    DateTime?
+  processedAt DateTime?
+  lastError   String?
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  @@index([status, scheduledFor])
+  @@index([createdAt])
+}
+
+model VersionEntry {
+  id              String   @id @default(cuid())
+  versionNumber   Int      @unique
+  stateOrCode     Json
+  metadata        Json?
+  rolledBackFrom  String?
+  createdAt       DateTime @default(now())
+  stateHash       String?
+  pointers        VersionPointer[]
+
+  @@index([createdAt])
+  @@index([versionNumber])
+}
+
+model VersionPointer {
+  id               String        @id @default("primary")
+  currentVersionId String?
+  currentVersion   VersionEntry? @relation(fields: [currentVersionId], references: [id], onDelete: SetNull)
+  updatedAt        DateTime      @updatedAt
+}

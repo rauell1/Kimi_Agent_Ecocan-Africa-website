@@ -1,0 +1,272 @@
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model User {
+  id              String            @id @default(cuid())
+  email           String            @unique
+  password        String
+  name            String?
+  role            String            @default("viewer")
+  avatarUrl       String?
+  bio             String?
+  locale          String            @default("en")
+  preferences     String?
+  createdAt       DateTime          @default(now())
+  updatedAt       DateTime          @updatedAt
+  sessions        UserSession[]
+  auditLogs       AuditLog[]
+  notifications   Notification[]
+  newsPosts       NewsPost[]
+  passwordResets  PasswordResetToken[]
+}
+
+model UserSession {
+  id        String   @id @default(cuid())
+  userId    String
+  token     String   @unique
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  @@index([token])
+  @@index([userId])
+}
+
+model Event {
+  id             String              @id @default(cuid())
+  title          String
+  slug           String?             @unique
+  description    String?
+  eventType      String              @default("workshop")
+  status         String              @default("draft")
+  startAt        DateTime?
+  endAt          DateTime?
+  region         String?
+  locationName   String?
+  locationType   String              @default("physical")
+  coverImageUrl  String?
+  createdBy      String?
+  createdAt      DateTime            @default(now())
+  updatedAt      DateTime            @updatedAt
+  participants   EventParticipant[]
+  documentation  EventDocumentation[]
+  metrics        EventMetrics?
+  reports        EventReport[]
+  docRequirements EventDocRequirement[]
+  media          EventMedia[]
+}
+
+model EventParticipant {
+  id            String   @id @default(cuid())
+  eventId       String
+  fullName      String
+  email         String?
+  phone         String?
+  organization  String?
+  region        String?
+  gender        String?
+  ageGroup      String?
+  roleAtEvent   String?
+  attended      Boolean  @default(false)
+  createdAt     DateTime @default(now())
+  event         Event    @relation(fields: [eventId], references: [id], onDelete: Cascade)
+  @@index([eventId])
+}
+
+model EventDocumentation {
+  id           String   @id @default(cuid())
+  eventId      String
+  type         String   @default("photo")
+  title        String
+  description  String?
+  fileUrl      String?
+  fileName     String?
+  fileSize     Int?
+  mimeType     String?
+  externalUrl  String?
+  uploadedBy   String?
+  createdAt    DateTime @default(now())
+  event        Event    @relation(fields: [eventId], references: [id], onDelete: Cascade)
+  @@index([eventId])
+}
+
+model EventMetrics {
+  id                    String   @id @default(cuid())
+  eventId               String   @unique
+  participantsTotal     Int      @default(0)
+  youthCount            Int      @default(0)
+  womenCount            Int      @default(0)
+  countiesReached       Int      @default(0)
+  waterPointsAssessed   Int      @default(0)
+  communitiesEngaged    Int      @default(0)
+  partnershipsFormed    Int      @default(0)
+  budgetSpent           Float    @default(0)
+  currency              String   @default("KES")
+  narrativeSummary      String?
+  createdAt             DateTime @default(now())
+  updatedAt             DateTime @updatedAt
+  event                 Event    @relation(fields: [eventId], references: [id], onDelete: Cascade)
+}
+
+model EventReport {
+  id        String   @id @default(cuid())
+  eventId   String
+  content   String
+  model     String?
+  createdAt DateTime @default(now())
+  event     Event    @relation(fields: [eventId], references: [id], onDelete: Cascade)
+  @@index([eventId])
+}
+
+model EventDocRequirement {
+  id        String   @id @default(cuid())
+  eventId   String
+  docType   String
+  label     String
+  hint      String?
+  required  Boolean  @default(true)
+  sortOrder Int      @default(0)
+  event     Event    @relation(fields: [eventId], references: [id], onDelete: Cascade)
+  @@index([eventId])
+}
+
+model EventMedia {
+  id          String   @id @default(cuid())
+  eventId     String
+  url         String
+  thumbnailUrl String?
+  title       String?
+  description String?
+  fileType    String?
+  fileSize    Int?
+  width       Int?
+  height      Int?
+  sortOrder   Int      @default(0)
+  uploadedBy  String?
+  createdAt   DateTime @default(now())
+  event       Event    @relation(fields: [eventId], references: [id], onDelete: Cascade)
+  @@index([eventId])
+}
+
+model AuditLog {
+  id         String   @id @default(cuid())
+  eventId    String?
+  userId     String?
+  action     String
+  entityType String?
+  entityId   String?
+  before     String?
+  after      String?
+  metadata   String?
+  createdAt  DateTime @default(now())
+  user       User?    @relation(fields: [userId], references: [id], onDelete: SetNull)
+  @@index([eventId])
+  @@index([userId])
+  @@index([createdAt])
+}
+
+model ContactMessage {
+  id        String   @id @default(cuid())
+  name      String
+  email     String
+  message   String
+  read      Boolean  @default(false)
+  createdAt DateTime @default(now())
+}
+
+model NewsPost {
+  id          String   @id @default(cuid())
+  title       String
+  slug        String?  @unique
+  content     String
+  excerpt     String?
+  coverUrl    String?
+  status      String   @default("draft")
+  authorId    String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  author      User?    @relation(fields: [authorId], references: [id], onDelete: SetNull)
+  @@index([status])
+  @@index([createdAt])
+}
+
+model Notification {
+  id        String   @id @default(cuid())
+  userId    String
+  type      String
+  title     String
+  message   String
+  link      String?
+  read      Boolean  @default(false)
+  createdAt DateTime @default(now())
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  @@index([userId])
+  @@index([read])
+  @@index([createdAt])
+}
+
+model PasswordResetToken {
+  id        String   @id @default(cuid())
+  userId    String
+  token     String   @unique
+  expiresAt DateTime
+  usedAt    DateTime?
+  createdAt DateTime @default(now())
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  @@index([token])
+  @@index([userId])
+}
+
+model NewsletterSubscriber {
+  id          String   @id @default(cuid())
+  email       String   @unique
+  firstName   String?
+  source      String   @default("website")
+  status      String   @default("active")
+  subscribedAt DateTime @default(now())
+  unsubscribedAt DateTime?
+  @@index([email])
+  @@index([status])
+}
+
+// ── Durable Workflow Engine ──
+// Provides step isolation, automatic retries, and full observability.
+// Maps 1:1 to Vercel Workflows programming model.
+
+model WorkflowRun {
+  id        String          @id @default(cuid())
+  workflow  String          // e.g. "ai-report", "newsletter.subscribe", "contact.notify"
+  status    String          @default("running") // running | completed | failed | cancelled
+  trigger   String          @default("api")      // api | scheduled | hook
+  input     String?         // JSON input payload
+  output    String?         // JSON output payload
+  error     String?         // last error message
+  createdAt DateTime        @default(now())
+  updatedAt DateTime        @updatedAt
+  steps     WorkflowStep[]
+  @@index([workflow])
+  @@index([status])
+  @@index([createdAt])
+}
+
+model WorkflowStep {
+  id        String   @id @default(cuid())
+  runId     String
+  stepName  String                     // e.g. "fetch-event-data", "call-llm", "send-email"
+  status    String   @default("pending") // pending | running | completed | failed | skipped
+  input     String?                     // JSON input
+  output    String?                     // JSON output
+  error     String?                     // error message
+  attempt   Int      @default(1)        // retry attempt number
+  durationMs Int?                       // execution time in milliseconds
+  createdAt DateTime @default(now())
+  run       WorkflowRun @relation(fields: [runId], references: [id], onDelete: Cascade)
+  @@index([runId])
+  @@index([status])
+}

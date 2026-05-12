@@ -1,0 +1,26 @@
+#!/usr/bin/env sh
+# .git/hooks/post-commit
+# Regenerates docs/codebase-map.md and docs/codebase-map.json after every commit.
+# Installed by: npm run hooks:install
+
+# Only run if npm / node is available
+if ! command -v node >/dev/null 2>&1; then
+  exit 0
+fi
+
+REPO_ROOT="$(git rev-parse --show-toplevel 2>/dev/null)"
+if [ -z "$REPO_ROOT" ]; then
+  exit 0
+fi
+
+SCRIPT="$REPO_ROOT/scripts/generate-architecture-map.mjs"
+if [ ! -f "$SCRIPT" ]; then
+  exit 0
+fi
+
+echo "[arch-map] Updating codebase map…"
+node "$SCRIPT" 2>&1 || true
+
+# Stage the generated docs if they changed (amend-free — just add to next commit)
+cd "$REPO_ROOT" || exit 0
+git add docs/codebase-map.md docs/codebase-map.json docs/.map-state.json 2>/dev/null || true

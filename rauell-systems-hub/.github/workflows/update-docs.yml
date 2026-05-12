@@ -1,0 +1,153 @@
+name: Update Codebase Map
+
+# ─────────────────────────────────────────────────────────────────────────────
+# Triggers on every push to main EXCEPT when the only files changed are the
+# auto-generated docs themselves. The [skip ci] tag on the bot commit also
+# prevents a second trigger, giving us two independent loop-guards.
+# ─────────────────────────────────────────────────────────────────────────────
+on:
+  push:
+    branches:
+      - main
+    paths-ignore:
+      - 'CODEBASE_MAP.md'
+      - 'ROLLBACK.md'
+      - '.github/workflows/update-docs.yml'
+
+# Cancel any in-progress run for the same branch so rapid pushes don't race
+concurrency:
+  group: update-docs-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  update-map:
+    name: Regenerate CODEBASE_MAP recent changes
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: write   # needed to push the updated file back
+
+    steps:
+      # ── 1. Checkout ────────────────────────────────────────────────────────
+      # fetch-depth: 0 gets full history so git log always has all commits.
+      # A shallow clone (depth: 20) breaks once there are >20 commits pushed
+      # in one go, or on the very first few runs after a force-push.
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          # Use the default GITHUB_TOKEN — no PAT needed.
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      # ── 2. Pull latest main to avoid push conflicts ─────────────────────────
+      # If two commits land back-to-back, the second job starts on a ref that
+      # is already behind. Pulling here (after the other job finishes, thanks
+      # to concurrency: cancel-in-progress) keeps the working tree current.
+      - name: Pull latest changes
+        run: git pull --rebase origin main
+
+      # ── 3. Regenerate CODEBASE_MAP.md using only Python ────────────────────
+      # Everything is done in one Python script to avoid shell-injection
+      # risks from commit messages containing special characters (|, $, `, etc.)
+      # The bash heredoc + sed approach in the original is replaced entirely.
+      - name: Regenerate CODEBASE_MAP recent-changes section
+        shell: python
+        run: |
+          import re
+          import subprocess
+          from datetime import datetime, timezone
+
+          REPO = "rauell1/rauell-systems-hub"
+          MAP_FILE = "CODEBASE_MAP.md"
+          N_COMMITS = 20
+
+          # ── a. Get commit log (NUL-delimited to survive any special chars) ──
+          result = subprocess.run(
+              [
+                  "git", "log", f"-{N_COMMITS}",
+                  "--pretty=format:%H%x00%ci%x00%an%x00%s"
+              ],
+              capture_output=True, text=True, check=True
+          )
+
+          rows = [
+              "| Date | SHA | Author | Description |",
+              "|---|---|---|---|",
+          ]
+          for line in result.stdout.strip().split("\n"):
+              if not line.strip():
+                  continue
+              parts = line.split("\x00", 3)
+              if len(parts) < 4:
+                  continue
+              sha, date, author, msg = parts
+              short   = sha[:7]
+              dt      = date[:10]
+              url     = f"https://github.com/{REPO}/commit/{sha}"
+              # Escape pipe chars in the message so the MD table stays valid
+              msg_clean = msg.strip()[:80].replace("|", "\\|")
+              author_clean = author.strip().replace("|", "\\|")
+              rows.append(f"| {dt} | [`{short}`]({url}) | {author_clean} | {msg_clean} |")
+
+          new_table = "\n".join(rows)
+
+          # ── b. Get metadata for the header line ─────────────────────────────
+          head_sha   = subprocess.run(
+              ["git", "rev-parse", "HEAD"],
+              capture_output=True, text=True, check=True
+          ).stdout.strip()
+          head_short = head_sha[:7]
+          head_date  = subprocess.run(
+              ["git", "log", "-1", "--pretty=format:%cI"],
+              capture_output=True, text=True, check=True
+          ).stdout.strip()
+          commit_url = f"https://github.com/{REPO}/commit/{head_sha}"
+
+          # ── c. Read, patch, write ────────────────────────────────────────────
+          with open(MAP_FILE, "r", encoding="utf-8") as f:
+              content = f.read()
+
+          # Update the "Last updated" header (first matching line)
+          content = re.sub(
+              r"> Last updated:.*",
+              f"> Last updated: `{head_date}` · commit [`{head_short}`]({commit_url})",
+              content
+          )
+
+          # Replace the sentinel-delimited recent-changes block
+          new_content = re.sub(
+              r"<!-- RECENT_CHANGES_START -->.*?<!-- RECENT_CHANGES_END -->",
+              f"<!-- RECENT_CHANGES_START -->\n{new_table}\n<!-- RECENT_CHANGES_END -->",
+              content,
+              flags=re.DOTALL
+          )
+
+          if new_content == content:
+              print("No changes needed — CODEBASE_MAP.md is already up to date.")
+          else:
+              with open(MAP_FILE, "w", encoding="utf-8") as f:
+                  f.write(new_content)
+              print(f"CODEBASE_MAP.md updated with {N_COMMITS} most recent commits.")
+
+      # ── 4. Commit and push (only if there are actual changes) ──────────────
+      - name: Commit updated CODEBASE_MAP.md
+        run: |
+          git config user.name  "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+
+          git add CODEBASE_MAP.md
+
+          # Exit cleanly if nothing changed — not an error
+          if git diff --cached --quiet; then
+            echo "✓ CODEBASE_MAP.md unchanged — nothing to commit."
+            exit 0
+          fi
+
+          git commit -m "docs(auto): update CODEBASE_MAP recent changes [skip ci]"
+
+          # Retry push up to 3 times to handle transient race conditions
+          for attempt in 1 2 3; do
+            git pull --rebase origin main && git push origin main && break
+            echo "Push attempt $attempt failed — retrying in 5 s..."
+            sleep 5
+          done

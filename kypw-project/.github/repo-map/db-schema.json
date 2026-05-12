@@ -1,0 +1,1612 @@
+{
+  "datasource": {
+    "provider": "postgresql",
+    "url": "env(\"DATABASE_URL\")",
+    "directUrl": "env(\"DIRECT_URL\")"
+  },
+  "total_models": 17,
+  "models": [
+    {
+      "name": "User",
+      "fields": [
+        {
+          "name": "id",
+          "type": "String",
+          "optional": false,
+          "list": false,
+          "has_default": true,
+          "unique": false
+        },
+        {
+          "name": "email",
+          "type": "String",
+          "optional": false,
+          "list": false,
+          "has_default": false,
+          "unique": true
+        },
+        {
+          "name": "password",
+          "type": "String",
+          "optional": false,
+          "list": false,
+          "has_default": false,
+          "unique": false
+        },
+        {
+          "name": "name",
+          "type": "String",
+          "optional": true,
+          "list": false,
+          "has_default": false,
+          "unique": false
+        },
+        {
+          "name": "role",
+          "type": "String",
+          "optional": false,
+          "list": false,
+          "has_default": true,
+          "unique": false
+        },
+        {
+          "name": "avatarUrl",
+          "type": "String",
+          "optional": true,
+          "list": false,
+          "has_default": false,
+          "unique": false
+        },
+        {
+          "name": "bio",
+          "type": "String",
+          "optional": true,
+          "list": false,
+          "has_default": false,
+          "unique": false
+        },
+        {
+          "name": "locale",
+          "type": "String",
+          "optional": false,
+          "list": false,
+          "has_default": true,
+          "unique": false
+        },
+        {
+          "name": "preferences",
+          "type": "String",
+          "optional": true,
+          "list": false,
+          "has_default": false,
+          "unique": false
+        },
+        {
+          "name": "createdAt",
+          "type": "DateTime",
+          "optional": false,
+          "list": false,
+          "has_default": true,
+          "unique": false
+        },
+        {
+          "name": "updatedAt",
+          "type": "DateTime",
+          "optional": false,
+          "list": false,
+          "has_default": false,
+          "unique": false
+        },
+        {
+          "name": "sessions",
+          "type": "UserSession",
+          "optional": false,
+          "list": true,
+          "has_default": false,
+          "unique": false
+        },
+        {
+          "name": "auditLogs",
+          "type": "AuditLog",
+          "optional": false,
+          "list": true,
+          "has_default": false,
+          "unique": false
+        },
+        {
+          "name": "notifications",
+          "type": "Notification",
+          "optional": false,
+          "list": true,
+          "has_default": false,
+          "unique": false
+        },
+        {
+          "name": "newsPosts",
+          "type": "NewsPost",
+          "optional": false,
+          "list": true,
+          "has_default": false,
+          "unique": false
+        },
+        {
+          "name": "passwordResets",
+          "type": "PasswordResetToken",
+          "optional": false,
+          "list": true,
+          "has_default": false,
+          "unique": false
+        }
+      ],
+      "relations": []
+    },
+    {
+      "name": "UserSession",
+      "fields": [
+        {
+          "name": "id",
+          "type": "String",
+          "optional": false,
+          "list": false,
+          "has_default": true,
+          "unique": false
+        },
+        {
+          "name": "userId",
+          "type": "String",
+          "optional": false,
+          "list": false,
+          "has_default": false,
+          "unique": false
+        },
+        {
+          "name": "token",
+          "type": "String",
+          "optional": false,
+          "list": false,
+          "has_default": false,
+          "unique": true
+        },
+        {
+          "name": "expiresAt",
+          "type": "DateTime",
+          "optional": false,
+          "list": false,
+          "has_default": false,
+          "unique": false
+        },
+        {
+          "name": "createdAt",
+          "type": "DateTime",
+          "optional": false,
+          "list": false,
+          "has_default": true,
+          "unique": false
+        },
+        {
+          "name": "user",
+          "type": "User",
+          "optional": false,
+          "list": false,
+          "has_default": false,
+          "unique": false
+        }
+      ],
+      "relations": [
+        {
+          "field": "user",
+          "references": "id"
+        }
+      ]
+    },
+    {
+      "name": "Event",
+      "fields": [
+        {
+          "name": "id",
+          "type": "String",
+          "optional": false,
+          "list": false,
+          "has_default": true,
+          "unique": false
+        },
+        {
+          "name": "title",
+          "type": "String",
+          "optional": false,
+          "list": false,
+          "has_default": false,
+          "unique": false
+        },
+        {
+          "name": "slug",
+          "type": "String",
+          "optional": true,
+          "list": false,
+          "has_default": false,
+          "unique": true
+        },
+        {
+          "name": "description",
+          "type": "String",
+          "optional": true,
+          "list": false,
+          "has_default": false,
+          "unique": false
+        },
+        {
+          "name": "eventType",
+          "type": "String",
+          "optional": false,
+          "list": false,
+          "has_default": true,
+          "unique": false
+        },
+        {
+          "name": "status",
+          "type": "String",
+          "optional": false,
+          "list": false,
+          "has_default": true,
+          "unique": false
+        },
+        {
+          "name": "startAt",
+          "type": "DateTime",
+          "optional": true,
+          "list": false,
+          "has_default": false,
+          "unique": false
+        },
+        {
+          "name": "endAt",
+          "type": "DateTime",
+          "optional": true,
+          "list": false,
+          "has_default": false,
+          "unique": false
+        },
+        {
+          "name": "region",
+          "type": "String",
+          "optional": true,
+          "list": false,
+          "has_default": false,
+          "unique": false
+        },
+        {
+          "name": "locationName",
+          "type": "String",
+          "optional": true,
+          "list": false,
+          "has_default": false,
+          "unique": false
+        },
+        {
+          "name": "locationType",
+          "type": "String",
+          "optional": false,
+          "list": false,
+          "has_default": true,
+          "unique": false
+        },
+        {
+          "name": "coverImageUrl",
+          "type": "String",
+          "optional": true,
+          "list": false,
+          "has_default": false,
+          "unique": false
+        },
+        {
+          "name": "createdBy",
+          "type": "String",
+          "optional": true,
+          "list": false,
+          "has_default": false,
+          "unique": false
+        },
+        {
+          "name": "createdAt",
+          "type": "DateTime",
+          "optional": false,
+          "list": false,
+          "has_default": true,
+          "unique": false
+        },
+        {
+          "name": "updatedAt",
+          "type": "DateTime",
+          "optional": false,
+          "list": false,
+          "has_default": false,
+          "unique": false
+        },
+        {
+          "name": "participants",
+          "type": "EventParticipant",
+          "optional": false,
+          "list": true,
+          "has_default": false,
+          "unique": false
+        },
+        {
+          "name": "documentation",
+          "type": "EventDocumentation",
+          "optional": false,
+          "list": true,
+          "has_default": false,
+          "unique": false
+        },
+        {
+          "name": "metrics",
+          "type": "EventMetrics",
+          "optional": true,
+          "list": false,
+          "has_default": false,
+          "unique": false
+        },
+        {
+          "name": "reports",
+          "type": "EventReport",
+          "optional": false,
+          "list": true,
+          "has_default": false,
+          "unique": false
+        },
+        {
+          "name": "docRequirements",
+          "type": "EventDocRequirement",
+          "optional": false,
+          "list": true,
+          "has_default": false,
+          "unique": false
+        },
+        {
+          "name": "media",
+          "type": "EventMedia",
+          "optional": false,
+          "list": true,
+          "has_default": false,
+          "unique": false
+        }
+      ],
+      "relations": []
+    },
+    {
+      "name": "EventParticipant",
+      "fields": [
+        {
+          "name": "id",
+          "type": "String",
+          "optional": false,
+          "list": false,
+          "has_default": true,
+          "unique": false
+        },
+        {
+          "name": "eventId",
+          "type": "String",
+          "optional": false,
+          "list": false,
+          "has_default": false,
+          "unique": false
+        },
+        {
+          "name": "fullName",
+          "type": "String",
+          "optional": false,
+          "list": false,
+          "has_default": false,
+          "unique": false
+        },
+        {
+          "name": "email",
+          "type": "String",
+          "optional": true,
+          "list": false,
+          "has_default": false,
+          "unique": false
+        },
+        {
+          "name": "phone",
+          "type": "String",
+          "optional": true,
+          "list": false,
+          "has_default": false,
+          "unique": false
+        },
+        {
+          "name": "organization",
+          "type": "String",
+          "optional": true,
+          "list": false,
+          "has_default": false,
+          "unique": false
+        },
+        {
+          "name": "region",
+          "type": "String",
+          "optional": true,
+          "list": false,
+          "has_default": false,
+          "unique": false
+        },
+        {
+          "name": "gender",
+          "type": "String",
+          "optional": true,
+          "list": false,
+          "has_default": false,
+          "unique": false
+        },
+        {
+          "name": "ageGroup",
+          "type": "String",
+          "optional": true,
+          "list": false,
+          "has_default": false,
+          "unique": false
+        },
+        {
+          "name": "roleAtEvent",
+          "type": "String",
+          "optional": true,
+          "list": false,
+          "has_default": false,
+          "unique": false
+        },
+        {
+          "name": "attended",
+          "type": "Boolean",
+          "optional": false,
+          "list": false,
+          "has_default": true,
+          "unique": false
+        },
+        {
+          "name": "createdAt",
+          "type": "DateTime",
+          "optional": false,
+          "list": false,
+          "has_default": true,
+          "unique": false
+        },
+        {
+          "name": "event",
+          "type": "Event",
+          "optional": false,
+          "list": false,
+          "has_default": false,
+          "unique": false
+        }
+      ],
+      "relations": [
+        {
+          "field": "event",
+          "references": "id"
+        }
+      ]
+    },
+    {
+      "name": "EventDocumentation",
+      "fields": [
+        {
+          "name": "id",
+          "type": "String",
+          "optional": false,
+          "list": false,
+          "has_default": true,
+          "unique": false
+        },
+        {
+          "name": "eventId",
+          "type": "String",
+          "optional": false,
+          "list": false,
+          "has_default": false,
+          "unique": false
+        },
+        {
+          "name": "type",
+          "type": "String",
+          "optional": false,
+          "list": false,
+          "has_default": true,
+          "unique": false
+        },
+        {
+          "name": "title",
+          "type": "String",
+          "optional": false,
+          "list": false,
+          "has_default": false,
+          "unique": false
+        },
+        {
+          "name": "description",
+          "type": "String",
+          "optional": true,
+          "list": false,
+          "has_default": false,
+          "unique": false
+        },
+        {
+          "name": "fileUrl",
+          "type": "String",
+          "optional": true,
+          "list": false,
+          "has_default": false,
+          "unique": false
+        },
+        {
+          "name": "fileName",
+          "type": "String",
+          "optional": true,
+          "list": false,
+          "has_default": false,
+          "unique": false
+        },
+        {
+          "name": "fileSize",
+          "type": "Int",
+          "optional": true,
+          "list": false,
+          "has_default": false,
+          "unique": false
+        },
+        {
+          "name": "mimeType",
+          "type": "String",
+          "optional": true,
+          "list": false,
+          "has_default": false,
+          "unique": false
+        },
+        {
+          "name": "externalUrl",
+          "type": "String",
+          "optional": true,
+          "list": false,
+          "has_default": false,
+          "unique": false
+        },
+        {
+          "name": "uploadedBy",
+          "type": "String",
+          "optional": true,
+          "list": false,
+          "has_default": false,
+          "unique": false
+        },
+        {
+          "name": "createdAt",
+          "type": "DateTime",
+          "optional": false,
+          "list": false,
+          "has_default": true,
+          "unique": false
+        },
+        {
+          "name": "event",
+          "type": "Event",
+          "optional": false,
+          "list": false,
+          "has_default": false,
+          "unique": false
+        }
+      ],
+      "relations": [
+        {
+          "field": "event",
+          "references": "id"
+        }
+      ]
+    },
+    {
+      "name": "EventMetrics",
+      "fields": [
+        {
+          "name": "id",
+          "type": "String",
+          "optional": false,
+          "list": false,
+          "has_default": true,
+          "unique": false
+        },
+        {
+          "name": "eventId",
+          "type": "String",
+          "optional": false,
+          "list": false,
+          "has_default": false,
+          "unique": true
+        },
+        {
+          "name": "participantsTotal",
+          "type": "Int",
+          "optional": false,
+          "list": false,
+          "has_default": true,
+          "unique": false
+        },
+        {
+          "name": "youthCount",
+          "type": "Int",
+          "optional": false,
+          "list": false,
+          "has_default": true,
+          "unique": false
+        },
+        {
+          "name": "womenCount",
+          "type": "Int",
+          "optional": false,
+          "list": false,
+          "has_default": true,
+          "unique": false
+        },
+        {
+          "name": "countiesReached",
+          "type": "Int",
+          "optional": false,
+          "list": false,
+          "has_default": true,
+          "unique": false
+        },
+        {
+          "name": "waterPointsAssessed",
+          "type": "Int",
+          "optional": false,
+          "list": false,
+          "has_default": true,
+          "unique": false
+        },
+        {
+          "name": "communitiesEngaged",
+          "type": "Int",
+          "optional": false,
+          "list": false,
+          "has_default": true,
+          "unique": false
+        },
+        {
+          "name": "partnershipsFormed",
+          "type": "Int",
+          "optional": false,
+          "list": false,
+          "has_default": true,
+          "unique": false
+        },
+        {
+          "name": "budgetSpent",
+          "type": "Float",
+          "optional": false,
+          "list": false,
+          "has_default": true,
+          "unique": false
+        },
+        {
+          "name": "currency",
+          "type": "String",
+          "optional": false,
+          "list": false,
+          "has_default": true,
+          "unique": false
+        },
+        {
+          "name": "narrativeSummary",
+          "type": "String",
+          "optional": true,
+          "list": false,
+          "has_default": false,
+          "unique": false
+        },
+        {
+          "name": "createdAt",
+          "type": "DateTime",
+          "optional": false,
+          "list": false,
+          "has_default": true,
+          "unique": false
+        },
+        {
+          "name": "updatedAt",
+          "type": "DateTime",
+          "optional": false,
+          "list": false,
+          "has_default": false,
+          "unique": false
+        },
+        {
+          "name": "event",
+          "type": "Event",
+          "optional": false,
+          "list": false,
+          "has_default": false,
+          "unique": false
+        }
+      ],
+      "relations": [
+        {
+          "field": "event",
+          "references": "id"
+        }
+      ]
+    },
+    {
+      "name": "String",
+      "fields": [
+        {
+          "name": "createdAt",
+          "type": "DateTime",
+          "optional": false,
+          "list": false,
+          "has_default": true,
+          "unique": false
+        },
+        {
+          "name": "event",
+          "type": "Event",
+          "optional": false,
+          "list": false,
+          "has_default": false,
+          "unique": false
+        }
+      ],
+      "relations": [
+        {
+          "field": "event",
+          "references": "id"
+        }
+      ]
+    },
+    {
+      "name": "EventDocRequirement",
+      "fields": [
+        {
+          "name": "id",
+          "type": "String",
+          "optional": false,
+          "list": false,
+          "has_default": true,
+          "unique": false
+        },
+        {
+          "name": "eventId",
+          "type": "String",
+          "optional": false,
+          "list": false,
+          "has_default": false,
+          "unique": false
+        },
+        {
+          "name": "docType",
+          "type": "String",
+          "optional": false,
+          "list": false,
+          "has_default": false,
+          "unique": false
+        },
+        {
+          "name": "label",
+          "type": "String",
+          "optional": false,
+          "list": false,
+          "has_default": false,
+          "unique": false
+        },
+        {
+          "name": "hint",
+          "type": "String",
+          "optional": true,
+          "list": false,
+          "has_default": false,
+          "unique": false
+        },
+        {
+          "name": "required",
+          "type": "Boolean",
+          "optional": false,
+          "list": false,
+          "has_default": true,
+          "unique": false
+        },
+        {
+          "name": "sortOrder",
+          "type": "Int",
+          "optional": false,
+          "list": false,
+          "has_default": true,
+          "unique": false
+        },
+        {
+          "name": "event",
+          "type": "Event",
+          "optional": false,
+          "list": false,
+          "has_default": false,
+          "unique": false
+        }
+      ],
+      "relations": [
+        {
+          "field": "event",
+          "references": "id"
+        }
+      ]
+    },
+    {
+      "name": "EventMedia",
+      "fields": [
+        {
+          "name": "id",
+          "type": "String",
+          "optional": false,
+          "list": false,
+          "has_default": true,
+          "unique": false
+        },
+        {
+          "name": "eventId",
+          "type": "String",
+          "optional": false,
+          "list": false,
+          "has_default": false,
+          "unique": false
+        },
+        {
+          "name": "url",
+          "type": "String",
+          "optional": false,
+          "list": false,
+          "has_default": false,
+          "unique": false
+        },
+        {
+          "name": "thumbnailUrl",
+          "type": "String",
+          "optional": true,
+          "list": false,
+          "has_default": false,
+          "unique": false
+        },
+        {
+          "name": "title",
+          "type": "String",
+          "optional": true,
+          "list": false,
+          "has_default": false,
+          "unique": false
+        },
+        {
+          "name": "description",
+          "type": "String",
+          "optional": true,
+          "list": false,
+          "has_default": false,
+          "unique": false
+        },
+        {
+          "name": "fileType",
+          "type": "String",
+          "optional": true,
+          "list": false,
+          "has_default": false,
+          "unique": false
+        },
+        {
+          "name": "fileSize",
+          "type": "Int",
+          "optional": true,
+          "list": false,
+          "has_default": false,
+          "unique": false
+        },
+        {
+          "name": "width",
+          "type": "Int",
+          "optional": true,
+          "list": false,
+          "has_default": false,
+          "unique": false
+        },
+        {
+          "name": "height",
+          "type": "Int",
+          "optional": true,
+          "list": false,
+          "has_default": false,
+          "unique": false
+        },
+        {
+          "name": "sortOrder",
+          "type": "Int",
+          "optional": false,
+          "list": false,
+          "has_default": true,
+          "unique": false
+        },
+        {
+          "name": "uploadedBy",
+          "type": "String",
+          "optional": true,
+          "list": false,
+          "has_default": false,
+          "unique": false
+        },
+        {
+          "name": "createdAt",
+          "type": "DateTime",
+          "optional": false,
+          "list": false,
+          "has_default": true,
+          "unique": false
+        },
+        {
+          "name": "event",
+          "type": "Event",
+          "optional": false,
+          "list": false,
+          "has_default": false,
+          "unique": false
+        }
+      ],
+      "relations": [
+        {
+          "field": "event",
+          "references": "id"
+        }
+      ]
+    },
+    {
+      "name": "AuditLog",
+      "fields": [
+        {
+          "name": "id",
+          "type": "String",
+          "optional": false,
+          "list": false,
+          "has_default": true,
+          "unique": false
+        },
+        {
+          "name": "eventId",
+          "type": "String",
+          "optional": true,
+          "list": false,
+          "has_default": false,
+          "unique": false
+        },
+        {
+          "name": "userId",
+          "type": "String",
+          "optional": true,
+          "list": false,
+          "has_default": false,
+          "unique": false
+        },
+        {
+          "name": "action",
+          "type": "String",
+          "optional": false,
+          "list": false,
+          "has_default": false,
+          "unique": false
+        },
+        {
+          "name": "entityType",
+          "type": "String",
+          "optional": true,
+          "list": false,
+          "has_default": false,
+          "unique": false
+        },
+        {
+          "name": "entityId",
+          "type": "String",
+          "optional": true,
+          "list": false,
+          "has_default": false,
+          "unique": false
+        },
+        {
+          "name": "before",
+          "type": "String",
+          "optional": true,
+          "list": false,
+          "has_default": false,
+          "unique": false
+        },
+        {
+          "name": "after",
+          "type": "String",
+          "optional": true,
+          "list": false,
+          "has_default": false,
+          "unique": false
+        },
+        {
+          "name": "metadata",
+          "type": "String",
+          "optional": true,
+          "list": false,
+          "has_default": false,
+          "unique": false
+        },
+        {
+          "name": "createdAt",
+          "type": "DateTime",
+          "optional": false,
+          "list": false,
+          "has_default": true,
+          "unique": false
+        },
+        {
+          "name": "user",
+          "type": "User",
+          "optional": true,
+          "list": false,
+          "has_default": false,
+          "unique": false
+        }
+      ],
+      "relations": [
+        {
+          "field": "user",
+          "references": "id"
+        }
+      ]
+    },
+    {
+      "name": "ContactMessage",
+      "fields": [
+        {
+          "name": "id",
+          "type": "String",
+          "optional": false,
+          "list": false,
+          "has_default": true,
+          "unique": false
+        },
+        {
+          "name": "name",
+          "type": "String",
+          "optional": false,
+          "list": false,
+          "has_default": false,
+          "unique": false
+        },
+        {
+          "name": "email",
+          "type": "String",
+          "optional": false,
+          "list": false,
+          "has_default": false,
+          "unique": false
+        },
+        {
+          "name": "message",
+          "type": "String",
+          "optional": false,
+          "list": false,
+          "has_default": false,
+          "unique": false
+        },
+        {
+          "name": "read",
+          "type": "Boolean",
+          "optional": false,
+          "list": false,
+          "has_default": true,
+          "unique": false
+        },
+        {
+          "name": "createdAt",
+          "type": "DateTime",
+          "optional": false,
+          "list": false,
+          "has_default": true,
+          "unique": false
+        }
+      ],
+      "relations": []
+    },
+    {
+      "name": "NewsPost",
+      "fields": [
+        {
+          "name": "id",
+          "type": "String",
+          "optional": false,
+          "list": false,
+          "has_default": true,
+          "unique": false
+        },
+        {
+          "name": "title",
+          "type": "String",
+          "optional": false,
+          "list": false,
+          "has_default": false,
+          "unique": false
+        },
+        {
+          "name": "slug",
+          "type": "String",
+          "optional": true,
+          "list": false,
+          "has_default": false,
+          "unique": true
+        },
+        {
+          "name": "content",
+          "type": "String",
+          "optional": false,
+          "list": false,
+          "has_default": false,
+          "unique": false
+        },
+        {
+          "name": "excerpt",
+          "type": "String",
+          "optional": true,
+          "list": false,
+          "has_default": false,
+          "unique": false
+        },
+        {
+          "name": "coverUrl",
+          "type": "String",
+          "optional": true,
+          "list": false,
+          "has_default": false,
+          "unique": false
+        },
+        {
+          "name": "status",
+          "type": "String",
+          "optional": false,
+          "list": false,
+          "has_default": true,
+          "unique": false
+        },
+        {
+          "name": "authorId",
+          "type": "String",
+          "optional": true,
+          "list": false,
+          "has_default": false,
+          "unique": false
+        },
+        {
+          "name": "createdAt",
+          "type": "DateTime",
+          "optional": false,
+          "list": false,
+          "has_default": true,
+          "unique": false
+        },
+        {
+          "name": "updatedAt",
+          "type": "DateTime",
+          "optional": false,
+          "list": false,
+          "has_default": false,
+          "unique": false
+        },
+        {
+          "name": "author",
+          "type": "User",
+          "optional": true,
+          "list": false,
+          "has_default": false,
+          "unique": false
+        }
+      ],
+      "relations": [
+        {
+          "field": "author",
+          "references": "id"
+        }
+      ]
+    },
+    {
+      "name": "Notification",
+      "fields": [
+        {
+          "name": "id",
+          "type": "String",
+          "optional": false,
+          "list": false,
+          "has_default": true,
+          "unique": false
+        },
+        {
+          "name": "userId",
+          "type": "String",
+          "optional": false,
+          "list": false,
+          "has_default": false,
+          "unique": false
+        },
+        {
+          "name": "type",
+          "type": "String",
+          "optional": false,
+          "list": false,
+          "has_default": false,
+          "unique": false
+        },
+        {
+          "name": "title",
+          "type": "String",
+          "optional": false,
+          "list": false,
+          "has_default": false,
+          "unique": false
+        },
+        {
+          "name": "message",
+          "type": "String",
+          "optional": false,
+          "list": false,
+          "has_default": false,
+          "unique": false
+        },
+        {
+          "name": "link",
+          "type": "String",
+          "optional": true,
+          "list": false,
+          "has_default": false,
+          "unique": false
+        },
+        {
+          "name": "read",
+          "type": "Boolean",
+          "optional": false,
+          "list": false,
+          "has_default": true,
+          "unique": false
+        },
+        {
+          "name": "createdAt",
+          "type": "DateTime",
+          "optional": false,
+          "list": false,
+          "has_default": true,
+          "unique": false
+        },
+        {
+          "name": "user",
+          "type": "User",
+          "optional": false,
+          "list": false,
+          "has_default": false,
+          "unique": false
+        }
+      ],
+      "relations": [
+        {
+          "field": "user",
+          "references": "id"
+        }
+      ]
+    },
+    {
+      "name": "PasswordResetToken",
+      "fields": [
+        {
+          "name": "id",
+          "type": "String",
+          "optional": false,
+          "list": false,
+          "has_default": true,
+          "unique": false
+        },
+        {
+          "name": "userId",
+          "type": "String",
+          "optional": false,
+          "list": false,
+          "has_default": false,
+          "unique": false
+        },
+        {
+          "name": "token",
+          "type": "String",
+          "optional": false,
+          "list": false,
+          "has_default": false,
+          "unique": true
+        },
+        {
+          "name": "expiresAt",
+          "type": "DateTime",
+          "optional": false,
+          "list": false,
+          "has_default": false,
+          "unique": false
+        },
+        {
+          "name": "usedAt",
+          "type": "DateTime",
+          "optional": true,
+          "list": false,
+          "has_default": false,
+          "unique": false
+        },
+        {
+          "name": "createdAt",
+          "type": "DateTime",
+          "optional": false,
+          "list": false,
+          "has_default": true,
+          "unique": false
+        },
+        {
+          "name": "user",
+          "type": "User",
+          "optional": false,
+          "list": false,
+          "has_default": false,
+          "unique": false
+        }
+      ],
+      "relations": [
+        {
+          "field": "user",
+          "references": "id"
+        }
+      ]
+    },
+    {
+      "name": "NewsletterSubscriber",
+      "fields": [
+        {
+          "name": "id",
+          "type": "String",
+          "optional": false,
+          "list": false,
+          "has_default": true,
+          "unique": false
+        },
+        {
+          "name": "email",
+          "type": "String",
+          "optional": false,
+          "list": false,
+          "has_default": false,
+          "unique": true
+        },
+        {
+          "name": "firstName",
+          "type": "String",
+          "optional": true,
+          "list": false,
+          "has_default": false,
+          "unique": false
+        },
+        {
+          "name": "source",
+          "type": "String",
+          "optional": false,
+          "list": false,
+          "has_default": true,
+          "unique": false
+        },
+        {
+          "name": "status",
+          "type": "String",
+          "optional": false,
+          "list": false,
+          "has_default": true,
+          "unique": false
+        },
+        {
+          "name": "subscribedAt",
+          "type": "DateTime",
+          "optional": false,
+          "list": false,
+          "has_default": true,
+          "unique": false
+        },
+        {
+          "name": "unsubscribedAt",
+          "type": "DateTime",
+          "optional": true,
+          "list": false,
+          "has_default": false,
+          "unique": false
+        }
+      ],
+      "relations": []
+    },
+    {
+      "name": "WorkflowRun",
+      "fields": [
+        {
+          "name": "id",
+          "type": "String",
+          "optional": false,
+          "list": false,
+          "has_default": true,
+          "unique": false
+        },
+        {
+          "name": "workflow",
+          "type": "String",
+          "optional": false,
+          "list": false,
+          "has_default": false,
+          "unique": false
+        },
+        {
+          "name": "status",
+          "type": "String",
+          "optional": false,
+          "list": false,
+          "has_default": true,
+          "unique": false
+        },
+        {
+          "name": "trigger",
+          "type": "String",
+          "optional": false,
+          "list": false,
+          "has_default": true,
+          "unique": false
+        },
+        {
+          "name": "input",
+          "type": "String",
+          "optional": true,
+          "list": false,
+          "has_default": false,
+          "unique": false
+        },
+        {
+          "name": "output",
+          "type": "String",
+          "optional": true,
+          "list": false,
+          "has_default": false,
+          "unique": false
+        },
+        {
+          "name": "error",
+          "type": "String",
+          "optional": true,
+          "list": false,
+          "has_default": false,
+          "unique": false
+        },
+        {
+          "name": "createdAt",
+          "type": "DateTime",
+          "optional": false,
+          "list": false,
+          "has_default": true,
+          "unique": false
+        },
+        {
+          "name": "updatedAt",
+          "type": "DateTime",
+          "optional": false,
+          "list": false,
+          "has_default": false,
+          "unique": false
+        },
+        {
+          "name": "steps",
+          "type": "WorkflowStep",
+          "optional": false,
+          "list": true,
+          "has_default": false,
+          "unique": false
+        }
+      ],
+      "relations": []
+    },
+    {
+      "name": "WorkflowStep",
+      "fields": [
+        {
+          "name": "id",
+          "type": "String",
+          "optional": false,
+          "list": false,
+          "has_default": true,
+          "unique": false
+        },
+        {
+          "name": "runId",
+          "type": "String",
+          "optional": false,
+          "list": false,
+          "has_default": false,
+          "unique": false
+        },
+        {
+          "name": "stepName",
+          "type": "String",
+          "optional": false,
+          "list": false,
+          "has_default": false,
+          "unique": false
+        },
+        {
+          "name": "status",
+          "type": "String",
+          "optional": false,
+          "list": false,
+          "has_default": true,
+          "unique": false
+        },
+        {
+          "name": "input",
+          "type": "String",
+          "optional": true,
+          "list": false,
+          "has_default": false,
+          "unique": false
+        },
+        {
+          "name": "output",
+          "type": "String",
+          "optional": true,
+          "list": false,
+          "has_default": false,
+          "unique": false
+        },
+        {
+          "name": "error",
+          "type": "String",
+          "optional": true,
+          "list": false,
+          "has_default": false,
+          "unique": false
+        },
+        {
+          "name": "attempt",
+          "type": "Int",
+          "optional": false,
+          "list": false,
+          "has_default": true,
+          "unique": false
+        },
+        {
+          "name": "durationMs",
+          "type": "Int",
+          "optional": true,
+          "list": false,
+          "has_default": false,
+          "unique": false
+        },
+        {
+          "name": "createdAt",
+          "type": "DateTime",
+          "optional": false,
+          "list": false,
+          "has_default": true,
+          "unique": false
+        },
+        {
+          "name": "run",
+          "type": "WorkflowRun",
+          "optional": false,
+          "list": false,
+          "has_default": false,
+          "unique": false
+        }
+      ],
+      "relations": [
+        {
+          "field": "run",
+          "references": "id"
+        }
+      ]
+    }
+  ]
+}

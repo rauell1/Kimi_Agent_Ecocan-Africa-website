@@ -1,0 +1,57 @@
+# Logs
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+
+node_modules
+dist
+dist-ssr
+*.local
+
+# Editor directories and files
+.vscode/*
+!.vscode/extensions.json
+.idea
+.DS_Store
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
+# dependencies
+node_modules
+
+# nextjs
+.next
+out
+
+# environment — NEVER commit these
+.env
+.env.local
+.env.*.local
+env.txt
+
+# logs
+npm-debug.log*
+yarn-debug.log*
+
+# misc
+.DS_Store
+
+#upload/download logs
+upload
+download
+
+dist
+build
+
+# Auto-generated files — do not commit to root
+CODEBASE_MAP.md
+
+# npm lockfile — this project uses Bun
+package-lock.json

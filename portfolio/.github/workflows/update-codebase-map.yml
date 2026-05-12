@@ -1,0 +1,82 @@
+# =============================================================
+# UPDATE CODEBASE MAP
+# Runs on every push to main (except changes to the map itself),
+# or can be triggered manually.
+#
+# Purpose: regenerates docs/CODEBASE_MAP.md so it always reflects
+# the current state of the repository tree.
+#
+# ── DEPENDENCY ADVISORY ──────────────────────────────────────────────────
+# This workflow uses the following pinned GitHub Actions:
+#   - actions/checkout@v4
+#   - actions/setup-node@v4  (node-version: '20')
+#
+# The generate script uses Node (not Bun) because it's a lightweight
+# standalone .mjs file with no package dependencies — Node is sufficient.
+# =============================================================
+name: Update Codebase Map
+
+on:
+  push:
+    branches:
+      - main
+    paths-ignore:
+      - 'docs/CODEBASE_MAP.md'
+      - '.github/workflows/update-codebase-map.yml'
+  workflow_dispatch:
+
+concurrency:
+  group: maintenance-auto-commits-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  update-map:
+    name: Regenerate docs/CODEBASE_MAP.md
+    if: github.event_name == 'workflow_dispatch' || (github.event_name == 'push' && github.actor != 'github-actions[bot]' && !contains(github.event.head_commit.message, '[skip ci]'))
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    env:
+      FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Generate docs/CODEBASE_MAP.md
+        run: node .github/scripts/generate-codebase-map.mjs
+
+      - name: Commit updated map (if changed)
+        run: |
+          set -euo pipefail
+          git config --local user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git config --local user.name "github-actions[bot]"
+          git add docs/CODEBASE_MAP.md
+          if git diff --cached --quiet; then
+            echo "No changes to docs/CODEBASE_MAP.md — skipping commit."
+          else
+            COMMIT_SHA=$(git rev-parse --short HEAD)
+            git commit -m "docs: auto-update CODEBASE_MAP.md [${COMMIT_SHA}] [skip ci]"
+            for attempt in 1 2 3; do
+              if git pull --rebase origin main && git push origin main; then
+                break
+              fi
+              if [ "$attempt" -eq 3 ]; then
+                echo "::error::Failed to push CODEBASE_MAP update after 3 attempts."
+                exit 1
+              fi
+            done
+           fi
+      - name: Job summary
+        if: always()
+        run: |
+          set -euo pipefail
+          echo "## Update Codebase Map" >> $GITHUB_STEP_SUMMARY
+          echo "Result: \`${{ job.status }}\`" >> $GITHUB_STEP_SUMMARY

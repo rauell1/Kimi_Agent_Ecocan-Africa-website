@@ -1,0 +1,7 @@
+User-agent: *
+Allow: /
+Disallow: /api/
+Disallow: /dashboard
+Disallow: /auth
+
+Sitemap: https://rauell.systems/sitemap.xml

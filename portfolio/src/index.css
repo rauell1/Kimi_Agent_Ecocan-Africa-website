@@ -1,0 +1,389 @@
+/* Fonts are loaded via <link rel="preconnect"> + <link rel="stylesheet"> in index.html.
+   These @imports are kept as a dev-environment fallback only. */
+@import url('https://api.fontshare.com/v2/css?f[]=satoshi@300,400,500,700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: 0 0% 3%;
+    --foreground: 0 0% 98%;
+
+    --card: 0 0% 6%;
+    --card-foreground: 0 0% 98%;
+
+    --popover: 0 0% 6%;
+    --popover-foreground: 0 0% 98%;
+
+    --primary: 197 68% 44%;
+    --primary-foreground: 0 0% 100%;
+
+    --secondary: 197 68% 30%;
+    --secondary-foreground: 0 0% 100%;
+
+    --muted: 0 0% 12%;
+    --muted-foreground: 0 0% 65%;
+
+    --accent: 197 68% 44%;
+    --accent-foreground: 0 0% 100%;
+
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 0 0% 98%;
+
+    --border: 0 0% 15%;
+    --input: 0 0% 15%;
+    --ring: 197 68% 44%;
+
+    --radius: 0.75rem;
+
+    --electric-blue: 197 68% 44%;
+    --electric-blue-glow: 197 100% 60%;
+    --dark: 0 0% 3%;
+    --dark-card: 0 0% 8%;
+    --dark-elevated: 0 0% 12%;
+
+    --gradient-blue: linear-gradient(135deg, hsl(197 68% 44%) 0%, hsl(197 100% 60%) 100%);
+    --gradient-dark: linear-gradient(180deg, hsl(0 0% 3%) 0%, hsl(0 0% 6%) 100%);
+    --gradient-glow: radial-gradient(ellipse at center, hsla(197, 68%, 44%, 0.15) 0%, transparent 70%);
+
+    --shadow-sm: 0 4px 20px rgba(0, 0, 0, 0.4);
+    --shadow-md: 0 10px 40px rgba(0, 0, 0, 0.5);
+    --shadow-lg: 0 20px 60px rgba(0, 0, 0, 0.6);
+    --shadow-glow: 0 0 40px hsla(197, 68%, 44%, 0.4);
+    --shadow-glow-strong: 0 0 60px hsla(197, 68%, 44%, 0.6);
+  }
+
+  .light,
+  [data-theme="light"] {
+    --background: 0 0% 98%;
+    --foreground: 0 0% 10%;
+
+    --card: 0 0% 100%;
+    --card-foreground: 0 0% 10%;
+
+    --popover: 0 0% 100%;
+    --popover-foreground: 0 0% 10%;
+
+    --primary: 197 68% 38%;
+    --primary-foreground: 0 0% 100%;
+
+    --secondary: 197 30% 90%;
+    --secondary-foreground: 197 68% 30%;
+
+    --muted: 0 0% 94%;
+    --muted-foreground: 0 0% 40%;
+
+    --accent: 197 50% 92%;
+    --accent-foreground: 197 68% 30%;
+
+    --destructive: 0 84% 55%;
+    --destructive-foreground: 0 0% 100%;
+
+    --border: 0 0% 88%;
+    --input: 0 0% 88%;
+    --ring: 197 68% 44%;
+
+    --electric-blue: 197 68% 38%;
+    --electric-blue-glow: 197 100% 50%;
+    --dark: 0 0% 98%;
+    --dark-card: 0 0% 100%;
+    --dark-elevated: 0 0% 96%;
+
+    --shadow-sm: 0 4px 20px rgba(0, 0, 0, 0.08);
+    --shadow-md: 0 10px 40px rgba(0, 0, 0, 0.1);
+    --shadow-lg: 0 20px 60px rgba(0, 0, 0, 0.12);
+    --shadow-glow: 0 0 40px hsla(197, 68%, 44%, 0.2);
+    --shadow-glow-strong: 0 0 60px hsla(197, 68%, 44%, 0.3);
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  html {
+    scroll-behavior: smooth;
+    color-scheme: light dark;
+    overscroll-behavior-y: contain;
+    -webkit-text-size-adjust: 100%;
+    text-size-adjust: 100%;
+  }
+
+  html.light { color-scheme: light; }
+  html.dark  { color-scheme: dark; }
+
+  html,
+  body {
+    transition-property: background-color, border-color, color;
+    transition-duration: 0.2s;
+    transition-timing-function: ease;
+  }
+
+  [class*="animate-"],
+  [class*="motion"],
+  .btn-glow,
+  .card-hover {
+    transition-property: transform, box-shadow, opacity;
+  }
+
+  body {
+    @apply bg-background text-foreground antialiased;
+    font-family: 'Satoshi', 'Inter', sans-serif;
+    touch-action: pan-y;
+    overflow-x: hidden;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    font-family: 'Satoshi', 'Inter', sans-serif;
+    font-weight: 700;
+    overflow-wrap: break-word;
+    word-break: break-word;
+  }
+
+  a, button {
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  img, video, canvas, svg {
+    max-width: 100%;
+  }
+}
+
+@layer components {
+  .glass {
+    @apply bg-white/5 backdrop-blur-md border border-white/10;
+  }
+
+  .light .glass,
+  [data-theme="light"] .glass {
+    @apply bg-white/70 border-black/10;
+  }
+
+  /* PERF: backdrop-blur-md (12px) instead of backdrop-blur-xl (24px).
+     backdrop-filter forces a GPU compositing layer per element.
+     Smaller blur radius = half the compositing cost, imperceptible visually at card sizes.
+     Reserve backdrop-blur-xl for full-screen overlays/modals only. */
+  .glass-card {
+    @apply bg-white/5 backdrop-blur-md border border-white/10 shadow-lg;
+  }
+
+  .light .glass-card,
+  [data-theme="light"] .glass-card {
+    @apply bg-white border-black/10 shadow-md;
+  }
+
+  .gradient-text {
+    @apply bg-clip-text text-transparent;
+    background-image: linear-gradient(135deg, hsl(197 68% 44%) 0%, hsl(197 100% 70%) 100%);
+    -webkit-box-decoration-break: clone;
+    box-decoration-break: clone;
+    padding-bottom: 0.05em;
+  }
+
+  .light .gradient-text,
+  [data-theme="light"] .gradient-text {
+    background-image: linear-gradient(135deg, hsl(197 68% 35%) 0%, hsl(197 100% 45%) 100%);
+  }
+
+  .gradient-border {
+    position: relative;
+    background: hsl(0 0% 6%);
+  }
+
+  .gradient-border::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    padding: 1px;
+    background: linear-gradient(135deg, hsl(197 68% 44%), hsl(197 100% 60%));
+    mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    mask-composite: exclude;
+    -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor;
+    pointer-events: none;
+  }
+
+  .glow-effect {
+    box-shadow: 0 0 30px hsla(197, 68%, 44%, 0.3), 0 0 60px hsla(197, 68%, 44%, 0.1);
+  }
+
+  .text-glow {
+    text-shadow: 0 0 20px hsla(197, 68%, 44%, 0.5), 0 0 40px hsla(197, 68%, 44%, 0.3);
+  }
+
+  .btn-glow {
+    @apply relative overflow-hidden;
+    box-shadow: 0 0 20px hsla(197, 68%, 44%, 0.4);
+    transition: transform 200ms cubic-bezier(0.16, 1, 0.3, 1),
+                box-shadow 200ms cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  .btn-glow:hover {
+    box-shadow: 0 0 40px hsla(197, 68%, 44%, 0.6), 0 0 80px hsla(197, 68%, 44%, 0.3);
+    transform: translateY(-2px);
+  }
+
+  .btn-glow:active {
+    transform: translateY(0) scale(0.97);
+    box-shadow: 0 0 15px hsla(197, 68%, 44%, 0.3);
+    transition-duration: 80ms;
+  }
+
+  .card-hover {
+    transition: transform 300ms cubic-bezier(0.16, 1, 0.3, 1),
+                box-shadow 300ms cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  .card-hover:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4), 0 0 30px hsla(197, 68%, 44%, 0.2);
+  }
+
+  .light .card-hover:hover,
+  [data-theme="light"] .card-hover:hover {
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1), 0 0 30px hsla(197, 68%, 44%, 0.15);
+  }
+
+  .card-hover:active {
+    transform: translateY(-2px) scale(0.99);
+    transition-duration: 80ms;
+  }
+
+  .section-heading {
+    @apply text-4xl md:text-5xl lg:text-6xl font-bold mb-4;
+    font-family: 'Satoshi', 'Inter', sans-serif;
+  }
+}
+
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: hsl(var(--background)); }
+::-webkit-scrollbar-thumb { background: hsl(197 68% 44%); border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: hsl(197 68% 50%); }
+
+::selection { background: hsl(197 68% 44%); color: white; }
+
+@keyframes gradient-shift {
+  0%, 100% { background-position: 0% 50%; }
+  50%       { background-position: 100% 50%; }
+}
+.animate-gradient { background-size: 200% 200%; animation: gradient-shift 8s ease infinite; }
+
+.app-spinner {
+  width: 2rem; height: 2rem;
+  border: 2px solid hsl(197 68% 44%);
+  border-top-color: transparent;
+  border-radius: 9999px;
+  animation: app-spin 0.6s linear infinite;
+}
+@keyframes app-spin { to { transform: rotate(360deg); } }
+
+@keyframes float-particle {
+  0%, 100% { transform: translateY(0) translateX(0) rotate(0deg);   opacity: 0.3; }
+  25%       { transform: translateY(-30px) translateX(10px) rotate(90deg);  opacity: 0.6; }
+  50%       { transform: translateY(-20px) translateX(-10px) rotate(180deg); opacity: 0.4; }
+  75%       { transform: translateY(-40px) translateX(5px) rotate(270deg);  opacity: 0.5; }
+}
+
+@keyframes pulse-glow {
+  0%, 100% { opacity: 0.4; transform: scale(1); }
+  50%       { opacity: 0.8; transform: scale(1.1); }
+}
+
+@keyframes orbit {
+  from { transform: rotate(0deg) translateX(150px) rotate(0deg); }
+  to   { transform: rotate(360deg) translateX(150px) rotate(-360deg); }
+}
+.animate-orbit         { animation: orbit 20s linear infinite; }
+.animate-orbit-reverse { animation: orbit 25s linear infinite reverse; }
+.animate-pulse-glow    { animation: pulse-glow 3s ease-in-out infinite; }
+
+/* Pure-CSS replacements for the Framer Motion floating decorations in ParticleBackground.
+   These run on the compositor thread (no JS overhead) and respect reduced-motion. */
+@keyframes float-hex {
+  0%   { transform: rotate(0deg)   translate(0px,   0px); }
+  33%  { transform: rotate(120deg) translate(60px, -40px); }
+  66%  { transform: rotate(240deg) translate(-30px, 30px); }
+  100% { transform: rotate(360deg) translate(0px,   0px); }
+}
+@keyframes float-tri {
+  0%   { transform: rotate(0deg)    translate(0px,  0px); }
+  33%  { transform: rotate(-120deg) translate(-50px, 45px); }
+  66%  { transform: rotate(-240deg) translate(40px, -20px); }
+  100% { transform: rotate(-360deg) translate(0px,  0px); }
+}
+@keyframes float-circle {
+  0%   { transform: scale(1)   translate(0px,  0px); opacity: 0.12; }
+  50%  { transform: scale(1.3) translate(70px, -50px); opacity: 0.25; }
+  100% { transform: scale(1)   translate(0px,  0px); opacity: 0.12; }
+}
+
+.particle-hex {
+  animation: float-hex 35s linear infinite;
+}
+.particle-tri {
+  animation: float-tri 30s linear infinite;
+}
+.particle-circle {
+  animation: float-circle 20s ease-in-out infinite;
+}
+
+@keyframes shimmer {
+  0%   { background-position: -200% 0; }
+  100% { background-position:  200% 0; }
+}
+.skeleton {
+  background: linear-gradient(
+    90deg,
+    hsl(var(--muted)) 25%,
+    hsl(var(--muted-foreground) / 0.15) 50%,
+    hsl(var(--muted)) 75%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 1.5s ease-in-out infinite;
+  border-radius: 0.25rem;
+}
+
+/* ============================================================
+   Performance: respect reduced-motion preference.
+   ============================================================ */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* ============================================================
+   PERF: will-change promoted ON DEMAND (hover/focus only).
+   Always-on will-change allocates a GPU layer for every card
+   at all times, wasting VRAM even when nothing is animating.
+   contain: layout style paint limits browser invalidation scope.
+   ============================================================ */
+.btn-glow {
+  contain: layout style paint;
+}
+.btn-glow:hover,
+.btn-glow:focus-visible {
+  will-change: transform, box-shadow;
+}
+
+.card-hover {
+  contain: layout style paint;
+}
+.card-hover:hover,
+.card-hover:focus-within {
+  will-change: transform;
+}
+
+/* Disable hover states on touch — prevents stuck hover highlighting after tap */
+@media (hover: none) {
+  .btn-glow:hover  { transform: none; box-shadow: 0 0 20px hsla(197, 68%, 44%, 0.4); will-change: auto; }
+  .card-hover:hover { transform: none; box-shadow: none; will-change: auto; }
+}

@@ -1,0 +1,823 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="description" content="Register for the Dyness Solar Industry Breakfast - May 21, 2026, Roam Park, Nairobi." />
+  <title>Register · Dyness Roundtable</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300..700&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
+  <style>
+    :root, [data-theme="dark"] {
+      --bg:#09090b; --surface:#121215; --surface-2:#1c1c22; --surface-3:#272730;
+      --border:rgba(255,255,255,0.12); --border-strong:rgba(255,255,255,0.22);
+      --text:#fafafa; --text-muted:#a1a1aa; --text-faint:#71717a;
+      --accent:#5b6af5; --accent-hover:#7481f6; --accent-glow:rgba(91,106,245,0.35);
+      --cyan:#00c2e0; --green:#3ecf8e; --red:#f87171;
+      --logo-slot-bg:rgba(255,255,255,0.05); --logo-slot-border:rgba(255,255,255,0.15);
+      --logo-slot-shadow:0 4px 20px rgba(0,0,0,0.6);
+      --roam-blend:normal; --roam-filter:brightness(0) invert(1) drop-shadow(0 2px 4px rgba(0,0,0,0.5));
+      --header-glow-a:rgba(91,106,245,0.25); --header-glow-b:rgba(0,194,224,0.15);
+      --form-hero-bg:linear-gradient(135deg,#121217 0%,#1b1b30 50%,#141423 100%);
+      --form-hero-glow:radial-gradient(ellipse 60% 50% at 80% 20%,rgba(91,106,245,0.25),transparent 70%);
+    }
+    [data-theme="light"] {
+      --bg:#f5f5f7; --surface:#ffffff; --surface-2:#f0f0f3; --surface-3:#e5e5ea;
+      --border:rgba(0,0,0,0.08); --border-strong:rgba(0,0,0,0.13);
+      --text:#1a1a1e; --text-muted:#5a5a65; --text-faint:#9a9aa5;
+      --accent:#4a59e8; --accent-hover:#3a49d8; --accent-glow:rgba(74,89,232,0.2);
+      --cyan:#0099bb; --green:#1fa855; --red:#d93025;
+      --logo-slot-bg:rgba(255,255,255,0.92); --logo-slot-border:rgba(0,0,0,0.10);
+      --logo-slot-shadow:0 2px 12px rgba(0,0,0,0.10);
+      --roam-blend:normal; --roam-filter:none;
+      --header-glow-a:rgba(74,89,232,0.13); --header-glow-b:rgba(0,153,187,0.08);
+      --form-hero-bg:linear-gradient(135deg,#eef0ff 0%,#e8ebff 50%,#edf0ff 100%);
+      --form-hero-glow:radial-gradient(ellipse 60% 50% at 80% 20%,rgba(74,89,232,0.12),transparent 70%);
+      --shadow-md:0 4px 24px rgba(0,0,0,0.1); --shadow-lg:0 8px 48px rgba(0,0,0,0.15);
+    }
+    :root {
+      --radius-sm:6px; --radius-md:10px; --radius-lg:14px; --radius-xl:20px;
+      --shadow-md:0 4px 24px rgba(0,0,0,0.4); --shadow-lg:0 8px 48px rgba(0,0,0,0.55);
+      --font-body:'Inter',system-ui,sans-serif;
+      --font-display:'Instrument Serif',Georgia,serif;
+      --ease:cubic-bezier(0.16,1,0.3,1);
+    }
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+    html{scroll-behavior:smooth;-webkit-font-smoothing:antialiased;scroll-padding-top:2rem;}
+    body{font-family:var(--font-body);background:var(--bg);color:var(--text);min-height:100dvh;line-height:1.6;transition:background 250ms,color 250ms;}
+    img,svg{display:block;max-width:100%;}
+    a{color:inherit;text-decoration:none;}
+    button{cursor:pointer;font:inherit;border:none;background:none;}
+    input,select,textarea{font:inherit;color:inherit;}
+    .sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;}
+
+    .page{max-width:1080px;margin-inline:auto;padding:0 clamp(1rem,4vw,2.5rem);}
+    .grid-main{display:grid;grid-template-columns:1fr;gap:1.25rem;align-items:start;}
+    @media(min-width:900px){.grid-main{grid-template-columns:5fr 6fr;}}
+
+    /* ── LOGO HERO ── */
+    .site-header{padding:clamp(2rem,5vw,4rem) 0 clamp(1.25rem,2.5vw,2rem);text-align:center;}
+
+    .logo-hero{
+      position:relative;
+      display:inline-flex;
+      align-items:center;
+      justify-content:center;
+      gap:0;
+      padding:clamp(0.75rem,2.5vw,1.5rem) clamp(1rem,4vw,2.5rem);
+      border-radius:var(--radius-xl);
+      border:1px solid var(--border-strong);
+      background:var(--surface);
+      box-shadow:var(--shadow-lg);
+      overflow:hidden;
+      transition:background 250ms,border-color 250ms,box-shadow 250ms;
+      max-width:min(100%, 600px);
+      width:100%;
+    }
+    .logo-hero::before{
+      content:'';position:absolute;inset:0;
+      background:radial-gradient(ellipse 55% 70% at 20% 50%,var(--header-glow-a),transparent 65%),
+                 radial-gradient(ellipse 55% 70% at 80% 50%,var(--header-glow-b),transparent 65%);
+      pointer-events:none;transition:background 250ms;
+    }
+    .logo-hero::after{
+      content:'';position:absolute;inset:0;
+      background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200' height='200'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='200' height='200' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");
+      pointer-events:none;opacity:0.5;
+    }
+    .logo-slot{
+      position:relative;z-index:1;
+      display:flex;align-items:center;justify-content:center;
+      padding:clamp(0.5rem,1.5vw,1rem) clamp(0.75rem,2.5vw,2.1rem);
+      border-radius:var(--radius-lg);
+      background:var(--logo-slot-bg);
+      border:1px solid var(--logo-slot-border);
+      box-shadow:var(--logo-slot-shadow);
+      backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);
+      transition:background 250ms,border-color 250ms,box-shadow 250ms,transform 300ms var(--ease);
+      flex:1;min-width:0;
+    }
+    .logo-slot:hover{transform:translateY(-2px);box-shadow:0 8px 32px rgba(0,0,0,0.35);}
+
+    .logo-slot--roam img{
+      height:clamp(36px,8vw,68px);
+      width:auto;max-width:100%;
+      object-fit:contain;
+      filter:var(--roam-filter);mix-blend-mode:var(--roam-blend);
+      transition:filter 250ms,mix-blend-mode 250ms;
+    }
+    .logo-slot--dyness img{
+      height:clamp(48px,10vw,96px);
+      width:auto;max-width:100%;
+      object-fit:contain;
+      transition:transform 250ms;
+    }
+    .logo-connector{
+      position:relative;z-index:1;
+      display:flex;align-items:center;gap:clamp(0.2rem,0.8vw,0.5rem);
+      padding:0 clamp(0.3rem,1.2vw,1.25rem);
+      flex-shrink:0;
+    }
+    .logo-connector-line{
+      width:clamp(10px,2vw,24px);height:1px;
+      background:linear-gradient(90deg,transparent,var(--border-strong),transparent);
+    }
+    .logo-connector-badge{
+      display:flex;align-items:center;justify-content:center;
+      width:clamp(20px,3.5vw,28px);height:clamp(20px,3.5vw,28px);
+      border-radius:50%;background:var(--surface-2);
+      border:1px solid var(--border-strong);color:var(--text-faint);
+    }
+
+    .site-header h1{font-family:var(--font-display);font-size:clamp(1.5rem,3vw,2.2rem);color:var(--text);font-weight:400;margin-top:1.5rem;}
+    .site-header p{color:var(--text-muted);font-size:0.9rem;margin-top:0.35rem;}
+    .back-link{display:inline-flex;align-items:center;gap:0.35rem;font-size:0.82rem;font-weight:600;color:var(--text-muted);margin-top:0.75rem;transition:color 180ms;}
+    .back-link:hover{color:var(--text);}
+
+    .badge{display:inline-flex;align-items:center;gap:0.4rem;padding:0.3rem 0.75rem;border-radius:999px;border:1px solid var(--border-strong);background:var(--surface-3);color:var(--text-muted);font-size:0.72rem;font-weight:600;letter-spacing:0.14em;text-transform:uppercase;}
+    .badge-dot{width:6px;height:6px;border-radius:50%;background:var(--green);flex-shrink:0;}
+
+    .card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius-xl);box-shadow:var(--shadow-md);}
+    .p-5{padding:1.5rem;} .p-6{padding:2rem;}
+
+    .section-label{font-size:0.68rem;font-weight:700;letter-spacing:0.2em;text-transform:uppercase;color:var(--text-faint);margin-bottom:0.35rem;}
+    .section-title{font-family:var(--font-display);font-size:clamp(1.1rem,2vw,1.45rem);color:var(--text);font-weight:400;}
+    .divider{height:1px;background:var(--border);margin:0.75rem 0;}
+
+    .detail-row{display:flex;align-items:flex-start;gap:0.75rem;}
+    .detail-icon{width:32px;height:32px;border-radius:var(--radius-sm);background:var(--surface-3);border:1px solid var(--border);display:grid;place-items:center;flex-shrink:0;color:var(--text-muted);}
+    .detail-label{font-size:0.65rem;font-weight:700;letter-spacing:0.14em;text-transform:uppercase;color:var(--text-faint);}
+    .detail-value{font-size:0.875rem;font-weight:600;color:var(--text);margin-top:0.1rem;}
+
+    #dayBadge{display:inline-flex;align-items:center;gap:0.4rem;padding:0.25rem 0.6rem;border-radius:999px;border:1px solid var(--border);background:var(--surface-2);font-size:0.72rem;font-weight:600;color:var(--text-muted);}
+
+    .agenda-list{list-style:none;position:relative;padding-left:1.5rem;display:grid;gap:1rem;}
+    .agenda-list::before{content:'';position:absolute;left:0;top:6px;bottom:6px;width:1px;background:var(--border-strong);}
+    .agenda-list li{position:relative;}
+    .agenda-list li::before{content:'';position:absolute;left:-1.5rem;top:4px;width:7px;height:7px;border-radius:50%;background:var(--surface-3);border:1px solid var(--border-strong);transform:translateX(-3px);}
+    .agenda-time{font-size:0.7rem;font-weight:700;letter-spacing:0.06em;color:var(--accent);}
+    .agenda-desc{font-size:0.875rem;color:var(--text-muted);margin-top:0.1rem;}
+
+    .tag{display:inline-flex;padding:0.2rem 0.6rem;border-radius:999px;border:1px solid var(--border);background:var(--surface-2);font-size:0.72rem;font-weight:600;color:var(--text-muted);}
+
+    .award-chip{background:var(--surface-2);border:1px solid var(--border);border-radius:var(--radius-md);padding:0.75rem;}
+    .award-chip .oc-label{font-size:0.62rem;font-weight:700;letter-spacing:0.14em;text-transform:uppercase;color:var(--text-faint);}
+    .award-chip .oc-value{font-size:0.82rem;font-weight:600;color:var(--text);margin-top:0.2rem;}
+
+    .form-hero{background:var(--form-hero-bg);border:1px solid var(--border-strong);border-radius:var(--radius-lg);padding:1.5rem;position:relative;overflow:hidden;}
+    .form-hero::before{content:'';position:absolute;inset:0;background:var(--form-hero-glow);pointer-events:none;}
+    .capacity-pill{background:rgba(128,128,128,0.08);border:1px solid var(--border-strong);border-radius:var(--radius-md);padding:0.75rem 1rem;text-align:right;flex-shrink:0;}
+    .capacity-number{font-family:var(--font-display);font-size:2rem;color:var(--text);line-height:1;}
+    .capacity-label{font-size:0.65rem;font-weight:600;letter-spacing:0.12em;text-transform:uppercase;color:var(--text-muted);margin-top:0.2rem;}
+
+    .status-chips{display:flex;flex-wrap:wrap;gap:0.5rem;margin-top:1rem;}
+    .status-chip{display:inline-flex;align-items:center;gap:0.35rem;padding:0.25rem 0.65rem;border-radius:999px;border:1px solid var(--border);background:rgba(128,128,128,0.04);font-size:0.7rem;font-weight:600;color:var(--text-muted);}
+    .chip-dot{width:6px;height:6px;border-radius:50%;flex-shrink:0;}
+
+    .progress-wrap{background:var(--surface-2);border:1px solid var(--border);border-radius:var(--radius-md);padding:0.875rem 1rem;}
+    .progress-track{width:100%;height:4px;border-radius:999px;background:var(--surface-3);overflow:hidden;margin-top:0.5rem;}
+    .progress-value{height:100%;width:0%;border-radius:inherit;background:linear-gradient(90deg,var(--accent),var(--cyan));transition:width 0.25s var(--ease), background 0.25s var(--ease);}
+
+    .field-group{background:var(--surface-2);border:1px solid var(--border);border-radius:var(--radius-lg);padding:1.25rem;}
+    .field-group-header{margin-bottom:1rem;}
+    .field-group-label{font-size:0.65rem;font-weight:700;letter-spacing:0.18em;text-transform:uppercase;color:var(--text-faint);}
+    .field-group-title{font-size:0.95rem;font-weight:600;color:var(--text);margin-top:0.2rem;}
+    .fields-grid{display:grid;gap:0.875rem;}
+    @media(min-width:520px){.fields-grid.two{grid-template-columns:1fr 1fr;}}
+    .field-full{grid-column:1/-1;}
+
+    .field-label{font-size:0.8rem;font-weight:600;color:var(--text-muted);display:block;margin-bottom:0.35rem;}
+    .req{color:var(--red);margin-left:0.1rem;}
+    .field-note{font-size:0.72rem;color:var(--text-faint);margin-top:0.3rem;}
+    .soft-input{
+      width:100%;padding:0.75rem 0.875rem;border-radius:var(--radius-md);
+      border:1px solid var(--border-strong);background:var(--surface);color:var(--text);
+      font-size:0.875rem;
+      transition:border-color 180ms var(--ease),box-shadow 180ms var(--ease),background 200ms;
+      -webkit-appearance:none;
+    }
+    .soft-input::placeholder{color:var(--text-faint);}
+    .soft-input:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 3px rgba(91,106,245,0.2);}
+    .soft-select{
+      appearance:none;
+      background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%238b8b96' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
+      background-repeat:no-repeat;
+      background-position:calc(100% - 0.875rem) 50%;
+      padding-right:2.5rem;
+    }
+
+    /* Multi-select topics checkboxes */
+    .topics-grid{display:grid;grid-template-columns:1fr 1fr;gap:0.5rem;margin-top:0.25rem;}
+    @media(max-width:480px){.topics-grid{grid-template-columns:1fr;}}
+    .topic-label{cursor:pointer;display:flex;align-items:center;gap:0.5rem;padding:0.55rem 0.75rem;border-radius:var(--radius-md);border:1px solid var(--border-strong);background:var(--surface);font-size:0.82rem;font-weight:500;color:var(--text-muted);transition:border-color 180ms,background 180ms,color 180ms;}
+    .topic-label input{width:14px;height:14px;accent-color:var(--accent);flex-shrink:0;}
+    .topic-label:has(input:checked){border-color:var(--accent);background:rgba(91,106,245,0.1);color:var(--text);}
+
+    .segmented-grid{display:grid;grid-template-columns:1fr 1fr;gap:0.75rem;margin-top:0.5rem;}
+    .seg-label{cursor:pointer;}
+    .seg-label input{position:absolute;opacity:0;width:0;height:0;}
+    .seg-face{display:block;text-align:center;padding:0.75rem;border-radius:var(--radius-md);border:1px solid var(--border-strong);background:var(--surface);font-size:0.875rem;font-weight:600;color:var(--text-muted);transition:border-color 180ms var(--ease),background 180ms var(--ease),color 180ms var(--ease),box-shadow 180ms var(--ease);}
+    .seg-label input:checked+.seg-face{border-color:var(--accent);background:rgba(91,106,245,0.12);color:var(--text);box-shadow:0 0 0 3px rgba(91,106,245,0.18);}
+
+    .btn-submit{width:100%;display:inline-flex;align-items:center;justify-content:center;gap:0.75rem;padding:1rem 1.5rem;border-radius:var(--radius-md);background:var(--accent);color:#fff;font-size:0.95rem;font-weight:700;letter-spacing:0.01em;transition:background 180ms var(--ease),box-shadow 180ms var(--ease),transform 180ms var(--ease);box-shadow:0 4px 20px var(--accent-glow);}
+    .btn-submit:hover:not(:disabled){background:var(--accent-hover);transform:translateY(-1px);box-shadow:0 8px 32px var(--accent-glow);}
+    .btn-submit:active:not(:disabled){transform:translateY(0);}
+    .btn-submit:disabled{opacity:0.5;cursor:not-allowed;}
+    .spinner{width:18px;height:18px;border-radius:50%;border:2px solid rgba(255,255,255,0.3);border-top-color:#fff;animation:spin 0.7s linear infinite;}
+    @keyframes spin{to{transform:rotate(360deg);}}
+    @media(prefers-reduced-motion:reduce){.spinner{animation:none;}}
+
+    .error-banner{display:none;background:rgba(245,91,91,0.1);border:1px solid rgba(245,91,91,0.3);border-radius:var(--radius-md);padding:0.875rem 1rem;margin-top:1rem;}
+    .error-banner.show{display:block;}
+    .error-title{font-size:0.85rem;font-weight:700;color:var(--red);}
+    .error-body{font-size:0.8rem;color:var(--text-muted);margin-top:0.2rem;}
+
+    .success-box{background:rgba(62,207,142,0.08);border:1px solid rgba(62,207,142,0.25);border-radius:var(--radius-xl);padding:1.5rem;}
+    .success-icon{width:40px;height:40px;border-radius:var(--radius-md);background:rgba(62,207,142,0.12);border:1px solid rgba(62,207,142,0.25);display:grid;place-items:center;color:var(--green);flex-shrink:0;}
+    .success-title{font-family:var(--font-display);font-size:1.3rem;color:var(--text);}
+    .success-detail{background:var(--surface-2);border:1px solid var(--border);border-radius:var(--radius-md);padding:1rem;margin-top:1rem;font-size:0.875rem;color:var(--text-muted);}
+    .success-detail strong{color:var(--text);}
+    .success-actions{display:flex;flex-wrap:wrap;gap:0.75rem;margin-top:1.25rem;}
+    .btn-cal{display:inline-flex;align-items:center;gap:0.5rem;padding:0.75rem 1.25rem;border-radius:var(--radius-md);background:var(--surface-2);border:1px solid var(--border-strong);color:var(--text);font-size:0.85rem;font-weight:600;transition:background 180ms var(--ease),border-color 180ms var(--ease);}
+    .btn-cal:hover{background:var(--surface-3);}
+    .btn-wa{display:inline-flex;align-items:center;gap:0.5rem;padding:0.75rem 1.25rem;border-radius:var(--radius-md);background:#1fa855;border:1px solid rgba(37,211,102,0.3);color:#fff;font-size:0.85rem;font-weight:600;transition:background 180ms var(--ease);}
+    .btn-wa:hover{background:#178a44;}
+
+    /* Waitlist theme specific styles */
+    .waitlist-box{background:rgba(240,180,41,0.08);border:1px solid rgba(240,180,41,0.25);border-radius:var(--radius-xl);padding:1.5rem;}
+    .waitlist-icon{width:40px;height:40px;border-radius:var(--radius-md);background:rgba(240,180,41,0.12);border:1px solid rgba(240,180,41,0.25);display:grid;place-items:center;color:#f0b429;flex-shrink:0;}
+
+    #fullMessage{display:none;}
+    #fullMessage.show{display:block;}
+    .full-box{background:rgba(255,180,0,0.06);border:1px solid rgba(255,180,0,0.2);border-radius:var(--radius-xl);padding:1.5rem;}
+    .full-title{font-family:var(--font-display);font-size:1.2rem;color:#ffb400;}
+
+    @media(max-width:900px){
+      aside{display:none;}
+      .grid-main{grid-template-columns:1fr;}
+      main#registration{padding-top:2rem;}
+    }
+
+    .site-footer{margin-top:clamp(2.5rem,5vw,4rem);padding:1.75rem 0;border-top:1px solid var(--border);text-align:center;color:var(--text-faint);font-size:0.78rem;}
+
+  </style>
+</head>
+<body>
+  <a href="#registration" class="sr-only">Skip to registration form</a>
+
+  <div class="page">
+
+    <header class="site-header">
+      <div style="display:flex;justify-content:center;">
+        <div class="logo-hero">
+          <div class="logo-slot logo-slot--roam">
+            <img src="./assets/logo.svg" alt="Roam Electric" width="230" height="68" loading="eager" />
+          </div>
+          <div class="logo-connector">
+            <div class="logo-connector-line"></div>
+            <div class="logo-connector-badge">
+              <svg width="10" height="10" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+                <path d="M2 2l8 8M10 2l-8 8"/></svg>
+            </div>
+            <div class="logo-connector-line"></div>
+          </div>
+          <div class="logo-slot logo-slot--dyness">
+            <img src="./assets/logo1.svg" alt="Dyness" width="320" height="96" loading="eager" />
+          </div>
+        </div>
+      </div>
+      <h1>Dyness Solar Industry Roundtable &amp; Partner Engagement</h1>
+      <p>Celebrating Partnerships, Powering Growth</p>
+      <a href="./index.html" class="back-link">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M12 5l-7 7 7 7"/></svg>
+        Event story
+      </a>
+    </header>
+
+    <main id="registration" class="grid-main" style="padding-bottom:clamp(3rem,6vw,5rem);">
+
+      <aside>
+        <div class="card p-5">
+          <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:1rem;flex-wrap:wrap;">
+            <div>
+              <p class="section-label">Event brief</p>
+              <h2 class="section-title">Technical engagement &middot; networking &middot; awards</h2>
+            </div>
+            <span id="dayBadge"><span id="dayBadgeDot" class="badge-dot"></span><span id="dayBadgeText">Loading&hellip;</span></span>
+          </div>
+          <div class="divider" style="margin-top:1rem;"></div>
+          <div style="display:grid;gap:0.75rem;margin-top:0.75rem;">
+            <div class="detail-row">
+              <div class="detail-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg></div>
+              <div><p class="detail-label">Date</p><p class="detail-value">May 21, 2026</p></div>
+            </div>
+            <div class="detail-row">
+              <div class="detail-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 3"/></svg></div>
+              <div><p class="detail-label">Time</p><p class="detail-value">8:00 AM &ndash; 11:00 AM EAT</p></div>
+            </div>
+            <div class="detail-row">
+              <div class="detail-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s7-4.5 7-11A7 7 0 0 0 5 11c0 6.5 7 11 7 11Z"/><circle cx="12" cy="10" r="2.5"/></svg></div>
+              <div><p class="detail-label">Venue</p><p class="detail-value">Roam Park, Mombasa Road, Nairobi</p></div>
+            </div>
+            <div class="detail-row">
+              <div class="detail-icon"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/></svg></div>
+              <div><p class="detail-label">Capacity</p><p class="detail-value">110 confirmed seats max</p></div>
+            </div>
+          </div>
+          <div class="divider" style="margin-top:1rem;margin-bottom:1rem;"></div>
+          <p class="section-label">Agenda snapshot</p>
+          <ol class="agenda-list" style="margin-top:0.5rem;">
+            <li><p class="agenda-time">08:00 &ndash; 08:30</p><p class="agenda-desc">Arrival, breakfast &amp; networking</p></li>
+            <li><p class="agenda-time">08:30 &ndash; 09:00</p><p class="agenda-desc">Opening remarks &amp; market context</p></li>
+            <li><p class="agenda-time">09:00 &ndash; 10:00</p><p class="agenda-desc">Technical deep dives &amp; Dyness product experience</p></li>
+            <li><p class="agenda-time">10:00 &ndash; 11:00</p><p class="agenda-desc">Awards, partner recognition &amp; closing networking</p></li>
+          </ol>
+          <div class="divider" style="margin-top:1rem;margin-bottom:1rem;"></div>
+          <p class="section-label">Who this is for</p>
+          <div style="display:flex;flex-wrap:wrap;gap:0.35rem;margin-top:0.4rem;">
+            <span class="tag">Solar installers</span><span class="tag">EPCs</span>
+            <span class="tag">Engineers</span><span class="tag">Project developers</span>
+            <span class="tag">Energy consultants</span><span class="tag">Distributors</span>
+          </div>
+          <div class="divider" style="margin-top:1rem;margin-bottom:1rem;"></div>
+          <p class="section-label">Recognition &amp; awards</p>
+          <div style="display:grid;gap:0.6rem;margin-top:0.35rem;">
+            <div class="award-chip"><p class="oc-label">Partner excellence</p><p class="oc-value">Top-performing installers and EPC partners</p></div>
+            <div class="award-chip"><p class="oc-label">Innovation</p><p class="oc-value">Outstanding storage &amp; solar project deployment</p></div>
+          </div>
+        </div>
+      </aside>
+
+      <section>
+        <div class="card p-6" id="formCard">
+          <div class="form-hero">
+            <div style="position:relative;display:flex;justify-content:space-between;gap:1rem;align-items:flex-start;flex-wrap:wrap;">
+              <div style="max-width:min(100%,320px);">
+                <p class="badge" style="background:rgba(0,0,0,0.45);border-color:rgba(255,255,255,0.3);color:#f5f5f5;">
+                  <span class="badge-dot"></span>Invite-only registration
+                </p>
+                <h2 class="section-title" id="formTitle" style="margin-top:0.6rem;">Reserve your seat at the Dyness Roundtable</h2>
+                <p id="formSubtitle" style="color:var(--text-muted);font-size:0.85rem;margin-top:0.4rem;text-align:justify;">Kindly complete this form to request an invite. The team will confirm your slot via email.</p>
+              </div>
+              <div class="capacity-pill">
+                <div class="capacity-number">110</div>
+                <div class="capacity-label">Confirmed Seats</div>
+                <div style="font-size:0.65rem; color:var(--text-faint); margin-top:0.2rem; font-weight:600;">Up to 300 Registrations Accepted</div>
+              </div>
+            </div>
+            <div class="status-chips">
+              <span class="status-chip"><span class="chip-dot" style="background:var(--green);"></span>Breakfast included</span>
+              <span class="status-chip"><span class="chip-dot" style="background:var(--accent);"></span>Technical &amp; business sessions</span>
+              <span class="status-chip"><span class="chip-dot" style="background:var(--cyan);"></span>Networking &amp; awards</span>
+            </div>
+          </div>
+
+          <div style="display:flex;flex-direction:column;gap:0.75rem;margin-top:1rem;">
+            <div class="progress-wrap">
+              <div style="display:flex;justify-content:space-between;align-items:center;gap:0.5rem;">
+                <p id="progressLabel" style="font-size:0.8rem;color:var(--text-muted);font-weight:600;">
+                  Seats available — secure your spot
+                </p>
+                <div style="text-align:right;">
+                  <p style="font-size:0.78rem;color:var(--text-faint);">
+                    <strong style="color:var(--text);"><span id="confirmedCount">0</span>/110</strong> confirmed seats
+                  </p>
+                  <p style="font-size:0.7rem;color:var(--text-faint); margin-top:0.1rem;">
+                    <span id="totalRegCount">0</span>/300 total registrations
+                  </p>
+                </div>
+              </div>
+              <div class="progress-track"><div class="progress-value" id="progressBar"></div></div>
+            </div>
+            <p style="font-size:0.78rem;color:var(--text-faint);text-align:justify;" id="helperText">Submitting this form does not guarantee attendance. The organising team will review your registration and confirm via email.</p>
+          </div>
+
+          <form id="registrationForm" style="margin-top:1.5rem;">
+
+            <!-- Attendance intent -->
+            <div class="field-group">
+              <div class="field-group-header">
+                <p class="field-group-label">Attendance intent</p>
+                <p class="field-group-title">Are you likely to attend if invited?</p>
+              </div>
+              <div class="segmented-grid">
+                <label class="seg-label">
+                  <input type="radio" name="attendanceIntent" value="Confirmed" required />
+                  <span class="seg-face">Yes, I will attend</span>
+                </label>
+                <label class="seg-label">
+                  <input type="radio" name="attendanceIntent" value="Interested" />
+                  <span class="seg-face">Interested, need more info</span>
+                </label>
+              </div>
+            </div>
+
+            <!-- Contact details -->
+            <div class="field-group" style="margin-top:1rem;">
+              <div class="field-group-header">
+                <p class="field-group-label">Contact details</p>
+                <p class="field-group-title">Tell us who you are</p>
+              </div>
+              <div class="fields-grid two">
+                <div>
+                  <label class="field-label" for="name">Full name<span class="req">*</span></label>
+                  <input id="name" name="name" class="soft-input" type="text" placeholder="Your full name" required />
+                </div>
+                <div>
+                  <label class="field-label" for="email">Email address<span class="req">*</span></label>
+                  <input id="email" name="email" class="soft-input" type="email" placeholder="name@company.com" required />
+                </div>
+                <div>
+                  <label class="field-label" for="phone">Phone number<span class="req">*</span></label>
+                  <input id="phone" name="phone" class="soft-input" type="tel" placeholder="07XX XXX XXX" required />
+                </div>
+                <div>
+                  <label class="field-label" for="company">Company / organisation<span class="req">*</span></label>
+                  <input id="company" name="company" class="soft-input" type="text" placeholder="Your company or organisation" required />
+                </div>
+              </div>
+            </div>
+
+            <!-- Role & segment -->
+            <div class="field-group" style="margin-top:1rem;">
+              <div class="field-group-header">
+                <p class="field-group-label">Professional context</p>
+                <p class="field-group-title">Your role in the energy or solar ecosystem</p>
+              </div>
+              <div class="fields-grid two">
+                <div>
+                  <label class="field-label" for="jobTitle">Role / job title<span class="req">*</span></label>
+                  <input id="jobTitle" name="jobTitle" class="soft-input" type="text" placeholder="e.g. Lead Solar Engineer" required />
+                </div>
+                <div>
+                  <label class="field-label" for="segment">Primary segment<span class="req">*</span></label>
+                  <select id="segment" name="segment" class="soft-input soft-select" required>
+                    <option value="">Select one</option>
+                    <option>Solar installer / EPC</option>
+                    <option>Engineering / technical</option>
+                    <option>Consulting / advisory</option>
+                    <option>Distribution / supply</option>
+                    <option>Project developer</option>
+                    <option>Corporate / C&amp;I energy buyer</option>
+                    <option>Other (energy ecosystem)</option>
+                  </select>
+                </div>
+                <div class="field-full">
+                  <label class="field-label" for="experience">Years of experience with solar or storage<span class="req">*</span></label>
+                  <select id="experience" name="experience" class="soft-input soft-select" required>
+                    <option value="">Select range</option>
+                    <option>0-2 years</option>
+                    <option>3-5 years</option>
+                    <option>6-10 years</option>
+                    <option>11-15 years</option>
+                    <option>16+ years</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+
+            <!-- Project profile -->
+            <div class="field-group" style="margin-top:1rem;">
+              <div class="field-group-header">
+                <p class="field-group-label">Project profile</p>
+                <p class="field-group-title">Your current focus areas</p>
+              </div>
+              <div class="fields-grid two">
+                <div>
+                  <label class="field-label" for="projectScale">Typical project scale<span class="req">*</span></label>
+                  <select id="projectScale" name="projectScale" class="soft-input soft-select" required>
+                    <option value="">Select one</option>
+                    <option>Residential (sub-10 kW)</option>
+                    <option>Small commercial (10-50 kW)</option>
+                    <option>Commercial &amp; industrial (50-500 kW)</option>
+                    <option>Large C&amp;I / utility (&gt;500 kW)</option>
+                  </select>
+                </div>
+                <div>
+                  <label class="field-label" for="projectRegions">Key regions you operate in<span class="req">*</span></label>
+                  <input id="projectRegions" name="projectRegions" class="soft-input" type="text" placeholder="e.g. Nairobi, Mombasa, Nanyuki" required />
+                </div>
+              </div>
+            </div>
+
+            <!-- Interest & expectations -->
+            <div class="field-group" style="margin-top:1rem;">
+              <div class="field-group-header">
+                <p class="field-group-label">Event expectations</p>
+                <p class="field-group-title">What would make this valuable for you?</p>
+              </div>
+              <div class="fields-grid">
+                <div>
+                  <label class="field-label">What topics are you most interested in? <span style="font-size:0.72rem;color:var(--text-faint);">(select all that apply)</span></label>
+                  <div class="topics-grid">
+                    <label class="topic-label"><input type="checkbox" name="topics" value="Battery storage design & sizing" /> Battery storage design &amp; sizing</label>
+                    <label class="topic-label"><input type="checkbox" name="topics" value="Solar + storage system integration" /> Solar + storage integration</label>
+                    <label class="topic-label"><input type="checkbox" name="topics" value="Dyness product deep dive" /> Dyness product deep dive</label>
+                    <label class="topic-label"><input type="checkbox" name="topics" value="C&I project case studies" /> C&amp;I project case studies</label>
+                    <label class="topic-label"><input type="checkbox" name="topics" value="Financing & business models" /> Financing &amp; business models</label>
+                    <label class="topic-label"><input type="checkbox" name="topics" value="O&M and after-sales support" /> O&amp;M and after-sales support</label>
+                    <label class="topic-label"><input type="checkbox" name="topics" value="Grid regulations & compliance" /> Grid regulations &amp; compliance</label>
+                    <label class="topic-label"><input type="checkbox" name="topics" value="EV & solar convergence" /> EV &amp; solar convergence</label>
+                  </div>
+                </div>
+                <div>
+                  <label class="field-label" for="dynessFamiliarity">How familiar are you with Dyness solutions?</label>
+                  <select id="dynessFamiliarity" name="dynessFamiliarity" class="soft-input soft-select">
+                    <option value="">Select one</option>
+                    <option>Very familiar - we already deploy Dyness</option>
+                    <option>Somewhat familiar - evaluated or discussed previously</option>
+                    <option>New to Dyness - first deep dive</option>
+                  </select>
+                </div>
+                <div>
+                  <label class="field-label" for="referralSource">How did you hear about this event?</label>
+                  <input id="referralSource" name="referralSource" class="soft-input" type="text" placeholder="e.g. Roam team, Dyness, industry colleague, email invite" />
+                </div>
+              </div>
+            </div>
+
+            <!-- Consent -->
+            <div class="field-group" style="margin-top:1rem;">
+              <div class="fields-grid">
+                <div>
+                  <label class="field-label">Consent &amp; communication<span class="req">*</span></label>
+                  <label style="display:flex;align-items:flex-start;gap:0.55rem;font-size:0.8rem;color:var(--text-muted);">
+                    <input type="checkbox" id="consent" name="consent" required style="margin-top:0.25rem;" />
+                    <span>I agree to be contacted by Roam Electric Ltd and Dyness regarding this event and related product, partnership, or technical information.</span>
+                  </label>
+                </div>
+              </div>
+            </div>
+
+            <div id="errorBanner" class="error-banner" role="alert">
+              <p class="error-title">Unable to submit registration</p>
+              <p class="error-body">Please check your internet connection and try again. If the problem persists, email <strong>roy.otieno@roam-electric.com</strong> with your details.</p>
+            </div>
+
+            <div style="margin-top:1.25rem;">
+              <button type="submit" class="btn-submit" id="submitButton">
+                <span id="btnText">Reserve your seat</span>
+              </button>
+              <p style="font-size:0.75rem;color:var(--text-faint);margin-top:0.5rem;">By submitting this form, you confirm that the details shared are accurate to the best of your knowledge.</p>
+            </div>
+          </form>
+
+          <!-- Success Message: Confirmed -->
+          <div id="successConfirmed" aria-live="polite" style="display:none; margin-top:1.5rem;">
+            <div class="success-box">
+              <div style="display:flex;gap:0.75rem;align-items:flex-start;">
+                <div class="success-icon">
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+                </div>
+                <div>
+                  <h2 class="success-title">Your Seat is Confirmed</h2>
+                  <p style="font-size:0.88rem;color:var(--text-muted);margin-top:0.35rem;">Congratulations! You have secured one of the 110 confirmed seats for the Dyness Solar Industry Roundtable.</p>
+                </div>
+              </div>
+              <div class="success-detail">
+                <p><strong>Next steps:</strong> Look out for a confirmation email with event details and a calendar invite shortly.</p>
+              </div>
+              <div class="success-actions">
+                <a class="btn-cal" href="https://calendar.app.google/hmh6zLMVPx7dRpZt5" target="_blank" rel="noopener">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>
+                  Add to calendar
+                </a>
+                <a class="btn-wa" href="https://chat.whatsapp.com/KFHrwHcbDx58FFMCBga3tl" target="_blank" rel="noopener">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L4 20l.9-3.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5A8.48 8.48 0 0 1 20 11v.5z"/></svg>
+                  Join WhatsApp Group
+                </a>
+              </div>
+            </div>
+          </div>
+
+          <!-- Success Message: Waitlist -->
+          <div id="successWaitlist" aria-live="polite" style="display:none; margin-top:1.5rem;">
+            <div class="waitlist-box">
+              <div style="display:flex;gap:0.75rem;align-items:flex-start;">
+                <div class="waitlist-icon">
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                </div>
+                <div>
+                  <h2 class="success-title">Added to Pending Confirmation List</h2>
+                  <p style="font-size:0.88rem;color:var(--text-muted);margin-top:0.35rem;">All confirmed seats are currently full. We have successfully received your registration and added you to the waitlist.</p>
+                </div>
+              </div>
+              <div class="success-detail">
+                <p><strong>Next steps:</strong> You will receive an email shortly. If a confirmed seat becomes available, the organising team will notify you immediately.</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Success Message: Interested -->
+          <div id="successInterested" aria-live="polite" style="display:none; margin-top:1.5rem;">
+            <div class="success-box" style="background:rgba(91,106,245,0.08); border-color:rgba(91,106,245,0.25);">
+              <div style="display:flex;gap:0.75rem;align-items:flex-start;">
+                <div class="success-icon" style="background:rgba(91,106,245,0.12); border-color:rgba(91,106,245,0.25); color:var(--accent);">
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4"/><path d="M12 8h.01"/></svg>
+                </div>
+                <div>
+                  <h2 class="success-title" style="color:var(--text);">Interest Received</h2>
+                  <p style="font-size:0.88rem;color:var(--text-muted);margin-top:0.35rem;">Thank you for your interest! We noticed you need a bit more information.</p>
+                </div>
+              </div>
+              <div class="success-detail">
+                <p><strong>Next steps:</strong> Our team will reach out to you shortly via email with more details to help you decide.</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Full state (300 limit reached) -->
+          <div id="fullMessage" aria-live="polite" style="display:none; margin-top:1.5rem;">
+            <div class="full-box">
+              <h2 class="full-title">Registrations are completely closed</h2>
+              <p style="font-size:0.88rem;color:var(--text-muted);margin-top:0.35rem;">Thank you for your interest. We have reached our maximum allowed system capacity (300 entries). No further registrations can be accepted at this time.</p>
+            </div>
+          </div>
+
+        </div>
+      </section>
+    </main>
+
+    <footer class="site-footer">
+      <p>&copy; 2026 Roam Electric Ltd &amp; Dyness. All rights reserved.</p>
+      <p>Roam Park, Mombasa Road, Nairobi &middot; Dyness Solar Industry Roundtable</p>
+    </footer>
+  </div>
+
+  <script>
+    // --- 1. Theme application from localStorage ---
+    (function(){
+      var html = document.documentElement;
+      var savedTheme = localStorage.getItem('theme');
+      var prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+      var theme = savedTheme ? savedTheme : (prefersDark ? 'dark' : 'light');
+      html.setAttribute('data-theme', theme);
+    })();
+
+    // --- 2. Application Logic (Submission & Stats Fetching) ---
+    (function(){
+      // URL of the deployed Google Apps Script Web App
+      const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbzQeKX1vydHz3n-EGNLm_K6Uue9uKKSqZLB7ugarRAiJ4XQcROQUulacOFCW66vEMKGhA/exec";
+      
+      const form = document.getElementById("registrationForm");
+      const submitBtn = document.getElementById("submitButton");
+      const btnTextEl = document.getElementById("btnText");
+      const errorBanner = document.getElementById("errorBanner");
+      const successConfirmed = document.getElementById("successConfirmed");
+      const successWaitlist = document.getElementById("successWaitlist");
+      const successInterested = document.getElementById("successInterested");
+      const fullMsg = document.getElementById("fullMessage");
+
+      let currentConfirmedCount = 0;
+
+      // UI Control functions
+      function setLoading(on){
+        if(!submitBtn) return;
+        submitBtn.disabled = on;
+        if(on) {
+            submitBtn.innerHTML = '<span>Submitting</span><span class="spinner" aria-hidden="true"></span>';
+        } else {
+            // Restore text based on current state logic
+            const isWaitlist = currentConfirmedCount >= 110;
+            submitBtn.innerHTML = `<span id="btnText">${isWaitlist ? 'Join waitlist' : 'Reserve your seat'}</span>`;
+        }
+      }
+
+      function showError(msg) {
+        if (!errorBanner) return;
+        const bodyEl = errorBanner.querySelector('.error-body');
+        if (bodyEl && msg) bodyEl.innerHTML = msg;
+        errorBanner.classList.add('show');
+      }
+
+      // Fetch dynamic statistics from Google Apps Script
+      async function fetchStats() {
+        try {
+          const res = await fetch(WEB_APP_URL); 
+          const data = await res.json();
+          
+          if(data.status === "success") {
+            const confirmed = data.confirmed_count || 0;
+            const total = data.total_count || 0;
+            currentConfirmedCount = confirmed;
+
+            const confirmedCap = 110;
+            const totalCap = 300;
+
+            // DOM Elements
+            const confirmedEl = document.getElementById("confirmedCount");
+            const totalEl = document.getElementById("totalRegCount");
+            const progressBar = document.getElementById("progressBar");
+            const label = document.getElementById("progressLabel");
+            const title = document.getElementById("formTitle");
+            const subtitle = document.getElementById("formSubtitle");
+            const helperText = document.getElementById("helperText");
+
+            if (confirmedEl) confirmedEl.innerText = confirmed;
+            if (totalEl) totalEl.innerText = total;
+
+            if (progressBar) {
+              const percentage = Math.min((confirmed / confirmedCap) * 100, 100);
+              progressBar.style.width = percentage + "%";
+
+              // HARD LIMIT REACHED
+              if (total >= totalCap) {
+                fullMsg.classList.add('show');
+                if(form) form.style.display = 'none';
+              } 
+              // WAITLIST MODE
+              else if (confirmed >= confirmedCap) {
+                label.innerText = "Now accepting waitlist registrations";
+                title.innerText = "All seats filled — join the pending confirmation list";
+                subtitle.innerText = "We are currently at capacity for confirmed seats, but spots may open up. Join the waitlist below.";
+                if(btnTextEl) btnTextEl.innerText = "Join waitlist";
+                if(helperText) helperText.style.display = 'none';
+                progressBar.style.background = "#f0b429"; // Warning Yellow color
+              } 
+              // OPEN MODE
+              else {
+                label.innerText = "Seats available — secure your spot";
+                title.innerText = "Reserve your seat at the Dyness Roundtable";
+                subtitle.innerText = "Kindly complete this form to request an invite. The team will confirm your slot via email.";
+                if(btnTextEl) btnTextEl.innerText = "Reserve your seat";
+                progressBar.style.background = "linear-gradient(90deg, var(--accent), var(--cyan))";
+              }
+            }
+          }
+        } catch (err) {
+          console.error("Could not fetch latest stats:", err);
+        }
+      }
+
+      // Form submission handler
+      if (form) {
+        form.addEventListener("submit", async (e) => {
+          e.preventDefault();
+          if (errorBanner) errorBanner.classList.remove('show');
+
+          // Build payload
+          const data = {
+            name: form.name.value,
+            email: form.email.value,
+            phone: form.phone.value,
+            company: form.company.value,
+            job_title: form.jobTitle.value,
+            segment: form.segment.value,
+            experience: form.experience.value,
+            attendance_intent: form.attendanceIntent.value,
+            project_scale: form.projectScale.value,
+            project_regions: form.projectRegions.value,
+            dyness_familiarity: form.dynessFamiliarity.value,
+            referral_source: form.referralSource.value,
+            topics: [...document.querySelectorAll('input[name="topics"]:checked')]
+              .map(el => el.value)
+              .join(', ')
+          };
+
+          setLoading(true);
+
+          try {
+            const res = await fetch(WEB_APP_URL, {
+              method: "POST",
+              headers: {
+                "Content-Type": "text/plain;charset=utf-8" 
+              },
+              body: JSON.stringify(data)
+            });
+
+            const result = await res.json();
+
+            if (result.status === "success") {
+              form.style.display = 'none';
+              form.reset();
+
+              // Evaluate returned status
+              if (result.registration_status === "Confirmed") {
+                  successConfirmed.style.display = 'block';
+              } else if (result.registration_status === "Information Requested") {
+                  successInterested.style.display = 'block';
+              } else {
+                  successWaitlist.style.display = 'block';
+              }
+
+              fetchStats(); // Update counters immediately
+            } else {
+              showError(result.message || "An error occurred during submission.");
+            }
+          } catch (err) {
+            showError("Please check your internet connection and try again. If the problem persists, email <strong>roy.otieno@roam-electric.com</strong> with your details.");
+          } finally {
+            setLoading(false);
+          }
+        });
+      }
+
+      // Initialize stats fetching
+      fetchStats();
+      setInterval(fetchStats, 15000); 
+
+    })();
+  </script>
+</body>
+</html>

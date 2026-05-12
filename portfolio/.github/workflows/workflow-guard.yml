@@ -1,0 +1,176 @@
+# =============================================================
+# WORKFLOW GUARD
+# Runs on every push to main and on every PR targeting main.
+#
+# Three independent jobs — each can pass/fail independently:
+#
+#  1. type-check          — tsc --noEmit (surfaces TS errors fast,
+#                            before the full Vite bundle)
+#  2. build-check         — bun install + vite build (full production bundle)
+#  3. dry-run-readme-shell — safe find/node dry-run against src/
+#
+# ── DEPENDENCY ADVISORY ──────────────────────────────────────
+# This workflow uses the following pinned GitHub Actions:
+#   - actions/checkout@v4
+#   - oven-sh/setup-bun@v2    (bun-version: latest; for type/build jobs)
+#   - actions/setup-node@v4   (node-version: '20'; dry-run job only)
+#
+# Review and update these pins when:
+#   1. You upgrade TypeScript (devDependencies in package.json)
+#      → Run `bunx tsc --version` locally after upgrade to verify
+#        no new strict errors are introduced
+#   2. You add a new Vite plugin or Rollup option to vite.config.ts
+#      → Verify the build-check job still passes — plugin breaking
+#        changes are the most common source of CI regressions
+#   3. You upgrade framer-motion, @tanstack/react-query, or any package
+#      with peer dependencies on React
+#      → Check that `bun install --frozen-lockfile` installs cleanly
+#   4. actions/* release a new major version
+#      → Review release notes; Dependabot will open a PR automatically
+# =============================================================
+name: Workflow Guard
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/**'
+      - 'src/**'
+      - 'package.json'
+      - 'tsconfig*.json'
+      - 'vite.config.ts'
+  pull_request:
+    branches: [main]
+    paths:
+      - '.github/workflows/**'
+      - 'src/**'
+      - 'package.json'
+      - 'tsconfig*.json'
+      - 'vite.config.ts'
+
+# Use event name in the group key so a push to main cannot cancel
+# an in-progress PR check running the same workflow concurrently.
+concurrency:
+  group: workflow-guard-${{ github.event_name }}-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  # ── Job 1: TypeScript type check ─────────────────────────────────
+  # Runs tsc --noEmit to catch type errors before the full Vite build.
+  # This is intentionally separate from build-check so type errors are
+  # reported as a distinct failing check with a clear label.
+  type-check:
+    name: TypeScript type check
+    runs-on: ubuntu-latest
+    env:
+      FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+    steps:
+      - uses: actions/checkout@v4
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: latest
+          cache: true
+      - name: Install dependencies
+        run: bun install
+      - name: Run tsc --noEmit
+        run: bunx tsc --noEmit
+        # If this fails: you have TypeScript errors in src/.
+        # Run `bunx tsc --noEmit` locally to see the full error list.
+        # Common causes after a dependency upgrade:
+        #   - New strict types in a library's .d.ts files
+        #   - Removed or renamed exports
+        #   - React peer dep version mismatch
+      - name: Job summary
+        if: always()
+        run: |
+          set -euo pipefail
+          echo "## TypeScript type check" >> $GITHUB_STEP_SUMMARY
+          echo "Result: \`${{ job.status }}\`" >> $GITHUB_STEP_SUMMARY
+
+  # ── Job 2: Vite production build ─────────────────────────────────
+  build-check:
+    name: Vite build sanity check
+    runs-on: ubuntu-latest
+    env:
+      FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+    steps:
+      - uses: actions/checkout@v4
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: latest
+          cache: true
+      - name: Install dependencies
+        run: bun install
+      - name: Build
+        run: bun run build
+        env:
+          CI: true
+      - name: Job summary
+        if: always()
+        run: |
+          set -euo pipefail
+          echo "## Vite build sanity check" >> $GITHUB_STEP_SUMMARY
+          echo "Result: \`${{ job.status }}\`" >> $GITHUB_STEP_SUMMARY
+
+  # ── Job 3: Dry-run README shell logic ────────────────────────────
+  dry-run-readme-shell:
+    name: Dry-run README shell logic against real src/ tree
+    runs-on: ubuntu-latest
+    env:
+      FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Simulate README stat gathering
+        run: |
+          set -euo pipefail
+
+          echo "=== Verifying src/ directory structure ==="
+          ls -la src/
+
+          echo ""
+          echo "=== Running safe find commands (must not exit 1) ==="
+
+          TS=$(find src \( -name '*.ts' -o -name '*.tsx' \) 2>/dev/null | wc -l | tr -d ' ' || echo '0')
+          CSS=$(find src -name '*.css' 2>/dev/null | wc -l | tr -d ' ' || echo '0')
+
+          if [ -d src/components ]; then
+            COMP=$(find src/components -name '*.tsx' 2>/dev/null | wc -l | tr -d ' ' || echo '0')
+          else
+            COMP=0
+          fi
+
+          PAGES=0
+          for dir in src/pages src/views src/app; do
+            if [ -d "$dir" ]; then
+              COUNT=$(find "$dir" -name '*.tsx' 2>/dev/null | wc -l | tr -d ' ' || echo '0')
+              PAGES=$((PAGES + COUNT))
+            fi
+          done
+
+          VER=$(node -p "require('./package.json').version" 2>/dev/null || echo 'n/a')
+
+          echo ""
+          echo "=== Results ==="
+          echo "TS files    : $TS"
+          echo "CSS files   : $CSS"
+          echo "Components  : $COMP"
+          echo "Pages/views : $PAGES"
+          echo "Version     : $VER"
+          echo ""
+          echo "All find commands completed without error. Dry-run passed."
+      - name: Job summary
+        if: always()
+        run: |
+          set -euo pipefail
+          echo "## Dry-run README shell logic" >> $GITHUB_STEP_SUMMARY
+          echo "Result: \`${{ job.status }}\`" >> $GITHUB_STEP_SUMMARY

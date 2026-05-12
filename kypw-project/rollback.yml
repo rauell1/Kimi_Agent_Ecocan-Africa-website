@@ -1,0 +1,149 @@
+# ──────────────────────────────────────────────────────────────
+# KYPW Rollback Configuration
+# ──────────────────────────────────────────────────────────────
+# Auto-updated by: bun scripts/generate-rollback.ts
+# Last updated: 2026-05-06T12:58:17.575Z
+# Git commit: 7f9de8e (main)
+#
+# This file tracks every deployment snapshot and provides
+# one-command rollback instructions for Vercel + Supabase.
+#
+# USAGE:
+#   bun run rollback                → View this file
+#   vercel rollback <deployment-id> → Roll back to a specific deploy
+#
+# ──────────────────────────────────────────────────────────────
+
+project:
+  name: "kypw-website"
+  repo: "KYPW Kenya Youth Parliament for Water"
+  framework: "nextjs"
+  runtime: "nodejs20.x"
+  database: "supabase-postgresql"
+  version: "0.2.0"
+
+git:
+  commit: "7f9de8e"
+  branch: "main"
+  last_updated: "2026-05-06T12:58:17.575Z"
+
+deployment:
+  platform: "vercel"
+  region: "iad1"
+  build_command: "bun install && prisma generate && prisma db push --skip-generate && next build"
+  install_command: "bun install"
+  output_directory: ".next/standalone"
+
+environment:
+  required:
+    - NEXT_PUBLIC_SUPABASE_URL
+    - NEXT_PUBLIC_SUPABASE_ANON_KEY
+    - DATABASE_URL
+    - DIRECT_URL
+    - SUPABASE_SERVICE_ROLE_KEY
+    - RESEND_API_KEY
+    - RESEND_FROM_EMAIL
+    - RESEND_FROM_NAME
+    - NEXT_PUBLIC_SITE_URL
+  optional: []
+
+database:
+  provider: "postgresql"
+  host: "supabase"
+  tool: "prisma"
+  schema_path: "prisma/schema.prisma"
+  migrations_path: "prisma/migrations"
+  sync_command: "prisma db push --skip-generate"
+  migrate_command: "prisma migrate deploy"
+  reset_command: "prisma migrate reset"
+  models:
+    - User
+    - UserSession
+    - Event
+    - EventParticipant
+    - EventDocumentation
+    - EventMetrics
+    - EventReport
+    - EventDocRequirement
+    - EventMedia
+    - AuditLog
+    - ContactMessage
+    - NewsPost
+    - Notification
+    - PasswordResetToken
+    - NewsletterSubscriber
+    - WorkflowRun
+    - WorkflowStep
+
+api_routes: 36
+  - "/api/auth/signin"
+  - "/api/auth/signup"
+  - "/api/auth/signout"
+  - "/api/auth/me"
+  - "/api/auth/reset-password"
+  - "/api/events"
+  - "/api/events/[id]"
+  - "/api/events/[id]/participants"
+  - "/api/events/[id]/participants/import"
+  - "/api/events/[id]/reports"
+  - "/api/events/[id]/media"
+  - "/api/events/[id]/media/[mediaId]"
+  - "/api/events/[id]/metrics"
+  - "/api/events/[id]/ai-report"
+  - "/api/events/[id]/documentation"
+  - "/api/events/[id]/documentation/requirements"
+  - "/api/events/[id]/audit-log"
+  - "/api/events/[id]/calendar-invite"
+  - "/api/newsletter/subscribe"
+  - "/api/newsletter/subscribers"
+  - "/api/contact"
+  - "/api/seed"
+  - "/api/analytics"
+  - "/api/workflows"
+  - "/api/dashboard"
+  - "/api/notifications"
+  - "/api/users"
+  - "/api/users/[id]/role"
+  - "/api/users/profile"
+  - "/api/users/password"
+  - "/api/news"
+  - "/api/news/[id]"
+  - "/api/documentation/requirements/bulk"
+  - "/api/supabase/status"
+  - "/api/supabase/auth-callback"
+  - "/api/supabase/sync"
+
+rollback:
+  strategy: "vercel-deployment-rollback"
+  steps:
+    - name: "Check current deployment"
+      command: "vercel ls --limit 1"
+    - name: "List recent deployments"
+      command: "vercel ls --limit 10"
+    - name: "Rollback to specific deployment"
+      command: "vercel rollback <deployment-id>"
+      note: "Vercel keeps all previous deployments. Rolling back is instant."
+    - name: "Rollback database (if schema changed)"
+      command: "prisma migrate resolve --rolled-back <migration-name>"
+      note: "Only needed if the rollback deployment expects an older schema."
+      warning: "Data loss may occur. Always backup before rolling back migrations."
+
+backup:
+  strategy: "supabase-point-in-time"
+  notes:
+    - "Supabase provides automatic daily backups for Pro plan and above"
+    - "Enable Point-in-Time Recovery (PITR) in Supabase Dashboard > Settings > Database"
+    - "Manual backup: Supabase Dashboard > Database > Backups > Create backup"
+    - "CLI backup: supabase db dump --data-only > backup-$(date +%Y%m%d).sql"
+
+snapshots: []
+# Auto-populated by deployment pipeline. Example entry:
+# - id: "dep_abc123xyz"
+#   timestamp: "2026-05-06T12:58:17.575Z"
+#   commit: "7f9de8e"
+#   branch: "main"
+#   message: "Current state snapshot"
+#   vercel_url: "kypw-website.vercel.app"
+#   status: "ready"
+#   api_routes: 36
+#   db_models: 17

@@ -1,0 +1,2369 @@
+{
+  "meta": {
+    "version": "4e66749f",
+    "commitHash": "4e66749f4e230a04ca970b663e0be0abc218a66c",
+    "branch": "main",
+    "author": "unknown",
+    "timestamp": "2026-05-02T08:39:55.215Z",
+    "summary": [
+      "chore: set default theme to light mode",
+      "M: src/app/layout.tsx"
+    ]
+  },
+  "stats": {
+    "totalFiles": 96,
+    "changedFiles": 1,
+    "coreFiles": 9
+  },
+  "layers": {
+    "pages": [
+      {
+        "path": "src/app/page.tsx",
+        "alias": "@/app/page.tsx",
+        "role": "page",
+        "exports": [
+          "HomePage",
+          "default"
+        ],
+        "imports": {
+          "internal": [
+            "src/components/error-boundary",
+            "src/components/site/navigation",
+            "src/components/site/hero",
+            "src/components/site/about",
+            "src/components/site/music",
+            "src/components/site/videos",
+            "src/components/site/photos",
+            "src/components/site/bookings",
+            "src/components/site/footer",
+            "src/components/site/global-player",
+            "src/components/site/page-padding"
+          ],
+          "external": []
+        },
+        "isCore": false,
+        "hash": "4ab91db83439be43",
+        "changed": false
+      }
+    ],
+    "layouts": [
+      {
+        "path": "src/app/layout.tsx",
+        "alias": "@/app/layout.tsx",
+        "role": "layout",
+        "exports": [
+          "metadata",
+          "RootLayout",
+          "default"
+        ],
+        "imports": {
+          "internal": [
+            "src/app/globals.css",
+            "src/components/ui/toaster",
+            "src/components/theme-provider"
+          ],
+          "external": [
+            "next",
+            "@vercel/analytics"
+          ]
+        },
+        "isCore": false,
+        "hash": "127d39cd8a45e947",
+        "changed": true
+      }
+    ],
+    "apiRoutes": [
+      {
+        "path": "src/app/api/booking/route.ts",
+        "alias": "@/app/api/booking/route.ts",
+        "role": "api-route",
+        "exports": [
+          "POST"
+        ],
+        "imports": {
+          "internal": [
+            "src/lib/db",
+            "src/lib/rate-limit",
+            "src/lib/resend"
+          ],
+          "external": [
+            "next",
+            "@prisma/client",
+            "zod"
+          ]
+        },
+        "isCore": true,
+        "hash": "e2bc69093d650a39",
+        "changed": false
+      },
+      {
+        "path": "src/app/api/health/route.ts",
+        "alias": "@/app/api/health/route.ts",
+        "role": "api-route",
+        "exports": [
+          "GET"
+        ],
+        "imports": {
+          "internal": [
+            "src/lib/db",
+            "src/lib/resend"
+          ],
+          "external": [
+            "next"
+          ]
+        },
+        "isCore": true,
+        "hash": "348fccc52ccc71dc",
+        "changed": false
+      },
+      {
+        "path": "src/app/api/mixcloud-url/route.ts",
+        "alias": "@/app/api/mixcloud-url/route.ts",
+        "role": "api-route",
+        "exports": [
+          "GET"
+        ],
+        "imports": {
+          "internal": [],
+          "external": [
+            "next",
+            "child_process",
+            "util",
+            "path"
+          ]
+        },
+        "isCore": true,
+        "hash": "ca1b67392c10ee93",
+        "changed": false
+      },
+      {
+        "path": "src/app/api/route.ts",
+        "alias": "@/app/api/route.ts",
+        "role": "api-route",
+        "exports": [
+          "GET"
+        ],
+        "imports": {
+          "internal": [],
+          "external": [
+            "next"
+          ]
+        },
+        "isCore": true,
+        "hash": "bb3323e70b608cf9",
+        "changed": false
+      },
+      {
+        "path": "src/app/api/webhooks/inbound/route.ts",
+        "alias": "@/app/api/webhooks/inbound/route.ts",
+        "role": "api-route",
+        "exports": [
+          "POST"
+        ],
+        "imports": {
+          "internal": [
+            "src/lib/resend"
+          ],
+          "external": [
+            "next",
+            "svix"
+          ]
+        },
+        "isCore": true,
+        "hash": "7c0e33310ec486e4",
+        "changed": false
+      }
+    ],
+    "componentsSite": [
+      {
+        "path": "src/components/site/about.tsx",
+        "alias": "@/components/site/about.tsx",
+        "role": "component-site",
+        "exports": [
+          "AboutSection"
+        ],
+        "imports": {
+          "internal": [
+            "src/hooks/use-in-view",
+            "src/lib/site-data"
+          ],
+          "external": [
+            "framer-motion",
+            "lucide-react"
+          ]
+        },
+        "isCore": false,
+        "hash": "c167d5cc4212094b",
+        "changed": false
+      },
+      {
+        "path": "src/components/site/bookings.tsx",
+        "alias": "@/components/site/bookings.tsx",
+        "role": "component-site",
+        "exports": [
+          "BookingsSection"
+        ],
+        "imports": {
+          "internal": [
+            "src/components/ui/button",
+            "src/components/ui/input",
+            "src/components/ui/label",
+            "src/components/ui/textarea",
+            "src/components/ui/select",
+            "src/hooks/use-toast",
+            "src/hooks/use-in-view",
+            "src/lib/site-data"
+          ],
+          "external": [
+            "react",
+            "framer-motion",
+            "lucide-react"
+          ]
+        },
+        "isCore": false,
+        "hash": "c0d9862fa7903ca6",
+        "changed": false
+      },
+      {
+        "path": "src/components/site/footer.tsx",
+        "alias": "@/components/site/footer.tsx",
+        "role": "component-site",
+        "exports": [
+          "Footer"
+        ],
+        "imports": {
+          "internal": [
+            "src/lib/site-data"
+          ],
+          "external": [
+            "lucide-react"
+          ]
+        },
+        "isCore": false,
+        "hash": "4e3de54dca818447",
+        "changed": false
+      },
+      {
+        "path": "src/components/site/global-player.tsx",
+        "alias": "@/components/site/global-player.tsx",
+        "role": "component-site",
+        "exports": [
+          "GlobalPlayer"
+        ],
+        "imports": {
+          "internal": [
+            "src/stores/audio-store"
+          ],
+          "external": [
+            "react",
+            "framer-motion",
+            "lucide-react"
+          ]
+        },
+        "isCore": false,
+        "hash": "54fc98edf61f7eaa",
+        "changed": false
+      },
+      {
+        "path": "src/components/site/hero.tsx",
+        "alias": "@/components/site/hero.tsx",
+        "role": "component-site",
+        "exports": [
+          "HeroSection"
+        ],
+        "imports": {
+          "internal": [
+            "src/lib/site-data"
+          ],
+          "external": [
+            "framer-motion",
+            "lucide-react"
+          ]
+        },
+        "isCore": false,
+        "hash": "2f7b103272e328ab",
+        "changed": false
+      },
+      {
+        "path": "src/components/site/index.ts",
+        "alias": "@/components/site/index.ts",
+        "role": "component-site",
+        "exports": [],
+        "imports": {
+          "internal": [
+            "src/components/site/navigation",
+            "src/components/site/hero",
+            "src/components/site/about",
+            "src/components/site/music",
+            "src/components/site/videos",
+            "src/components/site/bookings",
+            "src/components/site/photos",
+            "src/components/site/footer",
+            "src/components/site/global-player",
+            "src/components/site/page-padding",
+            "src/components/site/lazy-youtube"
+          ],
+          "external": []
+        },
+        "isCore": false,
+        "hash": "3e26015de4c36e06",
+        "changed": false
+      },
+      {
+        "path": "src/components/site/lazy-youtube.tsx",
+        "alias": "@/components/site/lazy-youtube.tsx",
+        "role": "component-site",
+        "exports": [
+          "LazyYoutube"
+        ],
+        "imports": {
+          "internal": [],
+          "external": [
+            "react",
+            "lucide-react"
+          ]
+        },
+        "isCore": false,
+        "hash": "56c8e32b112ef0bf",
+        "changed": false
+      },
+      {
+        "path": "src/components/site/music.tsx",
+        "alias": "@/components/site/music.tsx",
+        "role": "component-site",
+        "exports": [
+          "MusicSection"
+        ],
+        "imports": {
+          "internal": [
+            "src/hooks/use-in-view",
+            "src/stores/audio-store",
+            "src/lib/site-data"
+          ],
+          "external": [
+            "react",
+            "framer-motion",
+            "lucide-react"
+          ]
+        },
+        "isCore": false,
+        "hash": "f4948fd51a63b129",
+        "changed": false
+      },
+      {
+        "path": "src/components/site/navigation.tsx",
+        "alias": "@/components/site/navigation.tsx",
+        "role": "component-site",
+        "exports": [
+          "Navigation"
+        ],
+        "imports": {
+          "internal": [
+            "src/lib/site-data"
+          ],
+          "external": [
+            "react",
+            "framer-motion",
+            "lucide-react",
+            "next-themes"
+          ]
+        },
+        "isCore": false,
+        "hash": "26546fd7ff0ccb93",
+        "changed": false
+      },
+      {
+        "path": "src/components/site/page-padding.tsx",
+        "alias": "@/components/site/page-padding.tsx",
+        "role": "component-site",
+        "exports": [
+          "PagePadding"
+        ],
+        "imports": {
+          "internal": [
+            "src/stores/audio-store"
+          ],
+          "external": [
+            "react"
+          ]
+        },
+        "isCore": false,
+        "hash": "fe1a1c7b4e174b87",
+        "changed": false
+      },
+      {
+        "path": "src/components/site/photos.tsx",
+        "alias": "@/components/site/photos.tsx",
+        "role": "component-site",
+        "exports": [
+          "PhotosSection"
+        ],
+        "imports": {
+          "internal": [
+            "src/hooks/use-in-view",
+            "src/lib/site-data",
+            "src/components/ui/protected-image"
+          ],
+          "external": [
+            "framer-motion",
+            "lucide-react"
+          ]
+        },
+        "isCore": false,
+        "hash": "3b1e77702ec9d91c",
+        "changed": false
+      },
+      {
+        "path": "src/components/site/videos.tsx",
+        "alias": "@/components/site/videos.tsx",
+        "role": "component-site",
+        "exports": [
+          "VideosSection"
+        ],
+        "imports": {
+          "internal": [
+            "src/hooks/use-in-view",
+            "src/stores/audio-store",
+            "src/lib/site-data",
+            "src/components/site/lazy-youtube"
+          ],
+          "external": [
+            "react",
+            "framer-motion",
+            "lucide-react"
+          ]
+        },
+        "isCore": false,
+        "hash": "ed06d6d5145c10a2",
+        "changed": false
+      }
+    ],
+    "componentsUi": [
+      {
+        "path": "src/components/ui/accordion.tsx",
+        "alias": "@/components/ui/accordion.tsx",
+        "role": "component-ui",
+        "exports": [],
+        "imports": {
+          "internal": [
+            "src/lib/utils"
+          ],
+          "external": [
+            "react",
+            "@radix-ui/react-accordion",
+            "lucide-react"
+          ]
+        },
+        "isCore": false,
+        "hash": "7251e973cc689641",
+        "changed": false
+      },
+      {
+        "path": "src/components/ui/alert-dialog.tsx",
+        "alias": "@/components/ui/alert-dialog.tsx",
+        "role": "component-ui",
+        "exports": [],
+        "imports": {
+          "internal": [
+            "src/lib/utils",
+            "src/components/ui/button"
+          ],
+          "external": [
+            "react",
+            "@radix-ui/react-alert-dialog"
+          ]
+        },
+        "isCore": false,
+        "hash": "59967c334f56dd44",
+        "changed": false
+      },
+      {
+        "path": "src/components/ui/alert.tsx",
+        "alias": "@/components/ui/alert.tsx",
+        "role": "component-ui",
+        "exports": [],
+        "imports": {
+          "internal": [
+            "src/lib/utils"
+          ],
+          "external": [
+            "react",
+            "class-variance-authority"
+          ]
+        },
+        "isCore": false,
+        "hash": "49d8311589b810b1",
+        "changed": false
+      },
+      {
+        "path": "src/components/ui/aspect-ratio.tsx",
+        "alias": "@/components/ui/aspect-ratio.tsx",
+        "role": "component-ui",
+        "exports": [],
+        "imports": {
+          "internal": [],
+          "external": [
+            "@radix-ui/react-aspect-ratio"
+          ]
+        },
+        "isCore": false,
+        "hash": "6a75117416aa8920",
+        "changed": false
+      },
+      {
+        "path": "src/components/ui/avatar.tsx",
+        "alias": "@/components/ui/avatar.tsx",
+        "role": "component-ui",
+        "exports": [],
+        "imports": {
+          "internal": [
+            "src/lib/utils"
+          ],
+          "external": [
+            "react",
+            "@radix-ui/react-avatar"
+          ]
+        },
+        "isCore": false,
+        "hash": "e8672934f1c315f3",
+        "changed": false
+      },
+      {
+        "path": "src/components/ui/badge.tsx",
+        "alias": "@/components/ui/badge.tsx",
+        "role": "component-ui",
+        "exports": [],
+        "imports": {
+          "internal": [
+            "src/lib/utils"
+          ],
+          "external": [
+            "react",
+            "@radix-ui/react-slot",
+            "class-variance-authority"
+          ]
+        },
+        "isCore": false,
+        "hash": "f41c11fc13e9a1f1",
+        "changed": false
+      },
+      {
+        "path": "src/components/ui/breadcrumb.tsx",
+        "alias": "@/components/ui/breadcrumb.tsx",
+        "role": "component-ui",
+        "exports": [],
+        "imports": {
+          "internal": [
+            "src/lib/utils"
+          ],
+          "external": [
+            "react",
+            "@radix-ui/react-slot",
+            "lucide-react"
+          ]
+        },
+        "isCore": false,
+        "hash": "22f3f4c13ed1085c",
+        "changed": false
+      },
+      {
+        "path": "src/components/ui/button.tsx",
+        "alias": "@/components/ui/button.tsx",
+        "role": "component-ui",
+        "exports": [],
+        "imports": {
+          "internal": [
+            "src/lib/utils"
+          ],
+          "external": [
+            "react",
+            "@radix-ui/react-slot",
+            "class-variance-authority"
+          ]
+        },
+        "isCore": false,
+        "hash": "82403231e33fd3d4",
+        "changed": false
+      },
+      {
+        "path": "src/components/ui/calendar.tsx",
+        "alias": "@/components/ui/calendar.tsx",
+        "role": "component-ui",
+        "exports": [],
+        "imports": {
+          "internal": [
+            "src/lib/utils",
+            "src/components/ui/button"
+          ],
+          "external": [
+            "react",
+            "lucide-react",
+            "react-day-picker"
+          ]
+        },
+        "isCore": false,
+        "hash": "fe832b1ba33bd42a",
+        "changed": false
+      },
+      {
+        "path": "src/components/ui/card.tsx",
+        "alias": "@/components/ui/card.tsx",
+        "role": "component-ui",
+        "exports": [],
+        "imports": {
+          "internal": [
+            "src/lib/utils"
+          ],
+          "external": [
+            "react"
+          ]
+        },
+        "isCore": false,
+        "hash": "78cdb63dff3ec7ef",
+        "changed": false
+      },
+      {
+        "path": "src/components/ui/carousel.tsx",
+        "alias": "@/components/ui/carousel.tsx",
+        "role": "component-ui",
+        "exports": [],
+        "imports": {
+          "internal": [
+            "src/lib/utils",
+            "src/components/ui/button"
+          ],
+          "external": [
+            "react",
+            "embla-carousel-react",
+            "lucide-react"
+          ]
+        },
+        "isCore": false,
+        "hash": "b7ea0dda3903d972",
+        "changed": false
+      },
+      {
+        "path": "src/components/ui/chart.tsx",
+        "alias": "@/components/ui/chart.tsx",
+        "role": "component-ui",
+        "exports": [
+          "ChartConfig"
+        ],
+        "imports": {
+          "internal": [
+            "src/lib/utils"
+          ],
+          "external": [
+            "react",
+            "recharts"
+          ]
+        },
+        "isCore": false,
+        "hash": "670849399b33fecf",
+        "changed": false
+      },
+      {
+        "path": "src/components/ui/checkbox.tsx",
+        "alias": "@/components/ui/checkbox.tsx",
+        "role": "component-ui",
+        "exports": [],
+        "imports": {
+          "internal": [
+            "src/lib/utils"
+          ],
+          "external": [
+            "react",
+            "@radix-ui/react-checkbox",
+            "lucide-react"
+          ]
+        },
+        "isCore": false,
+        "hash": "4c395ef15549e460",
+        "changed": false
+      },
+      {
+        "path": "src/components/ui/collapsible.tsx",
+        "alias": "@/components/ui/collapsible.tsx",
+        "role": "component-ui",
+        "exports": [],
+        "imports": {
+          "internal": [],
+          "external": [
+            "@radix-ui/react-collapsible"
+          ]
+        },
+        "isCore": false,
+        "hash": "c2c74dc3e99482d0",
+        "changed": false
+      },
+      {
+        "path": "src/components/ui/command.tsx",
+        "alias": "@/components/ui/command.tsx",
+        "role": "component-ui",
+        "exports": [],
+        "imports": {
+          "internal": [
+            "src/lib/utils",
+            "src/components/ui/dialog"
+          ],
+          "external": [
+            "react",
+            "cmdk",
+            "lucide-react"
+          ]
+        },
+        "isCore": false,
+        "hash": "4fb4f8f95dfbe884",
+        "changed": false
+      },
+      {
+        "path": "src/components/ui/context-menu.tsx",
+        "alias": "@/components/ui/context-menu.tsx",
+        "role": "component-ui",
+        "exports": [],
+        "imports": {
+          "internal": [
+            "src/lib/utils"
+          ],
+          "external": [
+            "react",
+            "@radix-ui/react-context-menu",
+            "lucide-react"
+          ]
+        },
+        "isCore": false,
+        "hash": "6573f8ed4232ae98",
+        "changed": false
+      },
+      {
+        "path": "src/components/ui/dialog.tsx",
+        "alias": "@/components/ui/dialog.tsx",
+        "role": "component-ui",
+        "exports": [],
+        "imports": {
+          "internal": [
+            "src/lib/utils"
+          ],
+          "external": [
+            "react",
+            "@radix-ui/react-dialog",
+            "lucide-react"
+          ]
+        },
+        "isCore": false,
+        "hash": "491a87bfae8f2877",
+        "changed": false
+      },
+      {
+        "path": "src/components/ui/drawer.tsx",
+        "alias": "@/components/ui/drawer.tsx",
+        "role": "component-ui",
+        "exports": [],
+        "imports": {
+          "internal": [
+            "src/lib/utils"
+          ],
+          "external": [
+            "react",
+            "vaul"
+          ]
+        },
+        "isCore": false,
+        "hash": "0c9464ed4f95207f",
+        "changed": false
+      },
+      {
+        "path": "src/components/ui/dropdown-menu.tsx",
+        "alias": "@/components/ui/dropdown-menu.tsx",
+        "role": "component-ui",
+        "exports": [],
+        "imports": {
+          "internal": [
+            "src/lib/utils"
+          ],
+          "external": [
+            "react",
+            "@radix-ui/react-dropdown-menu",
+            "lucide-react"
+          ]
+        },
+        "isCore": false,
+        "hash": "9b346378821ba06f",
+        "changed": false
+      },
+      {
+        "path": "src/components/ui/form.tsx",
+        "alias": "@/components/ui/form.tsx",
+        "role": "component-ui",
+        "exports": [],
+        "imports": {
+          "internal": [
+            "src/lib/utils",
+            "src/components/ui/label"
+          ],
+          "external": [
+            "react",
+            "@radix-ui/react-label",
+            "@radix-ui/react-slot",
+            "react-hook-form"
+          ]
+        },
+        "isCore": false,
+        "hash": "b41b4b10f5e11b2a",
+        "changed": false
+      },
+      {
+        "path": "src/components/ui/hover-card.tsx",
+        "alias": "@/components/ui/hover-card.tsx",
+        "role": "component-ui",
+        "exports": [],
+        "imports": {
+          "internal": [
+            "src/lib/utils"
+          ],
+          "external": [
+            "react",
+            "@radix-ui/react-hover-card"
+          ]
+        },
+        "isCore": false,
+        "hash": "031f6a309d87c8e4",
+        "changed": false
+      },
+      {
+        "path": "src/components/ui/input-otp.tsx",
+        "alias": "@/components/ui/input-otp.tsx",
+        "role": "component-ui",
+        "exports": [],
+        "imports": {
+          "internal": [
+            "src/lib/utils"
+          ],
+          "external": [
+            "react",
+            "input-otp",
+            "lucide-react"
+          ]
+        },
+        "isCore": false,
+        "hash": "35d561c352fde4e3",
+        "changed": false
+      },
+      {
+        "path": "src/components/ui/input.tsx",
+        "alias": "@/components/ui/input.tsx",
+        "role": "component-ui",
+        "exports": [],
+        "imports": {
+          "internal": [
+            "src/lib/utils"
+          ],
+          "external": [
+            "react"
+          ]
+        },
+        "isCore": false,
+        "hash": "6628e8fde207857b",
+        "changed": false
+      },
+      {
+        "path": "src/components/ui/label.tsx",
+        "alias": "@/components/ui/label.tsx",
+        "role": "component-ui",
+        "exports": [],
+        "imports": {
+          "internal": [
+            "src/lib/utils"
+          ],
+          "external": [
+            "react",
+            "@radix-ui/react-label"
+          ]
+        },
+        "isCore": false,
+        "hash": "9ec42c8a57e82311",
+        "changed": false
+      },
+      {
+        "path": "src/components/ui/menubar.tsx",
+        "alias": "@/components/ui/menubar.tsx",
+        "role": "component-ui",
+        "exports": [],
+        "imports": {
+          "internal": [
+            "src/lib/utils"
+          ],
+          "external": [
+            "react",
+            "@radix-ui/react-menubar",
+            "lucide-react"
+          ]
+        },
+        "isCore": false,
+        "hash": "d3c5b6060323b78a",
+        "changed": false
+      },
+      {
+        "path": "src/components/ui/navigation-menu.tsx",
+        "alias": "@/components/ui/navigation-menu.tsx",
+        "role": "component-ui",
+        "exports": [],
+        "imports": {
+          "internal": [
+            "src/lib/utils"
+          ],
+          "external": [
+            "react",
+            "@radix-ui/react-navigation-menu",
+            "class-variance-authority",
+            "lucide-react"
+          ]
+        },
+        "isCore": false,
+        "hash": "d71f57fe0f365541",
+        "changed": false
+      },
+      {
+        "path": "src/components/ui/pagination.tsx",
+        "alias": "@/components/ui/pagination.tsx",
+        "role": "component-ui",
+        "exports": [],
+        "imports": {
+          "internal": [
+            "src/lib/utils",
+            "src/components/ui/button"
+          ],
+          "external": [
+            "react",
+            "lucide-react"
+          ]
+        },
+        "isCore": false,
+        "hash": "53ffa0474d07dbfe",
+        "changed": false
+      },
+      {
+        "path": "src/components/ui/popover.tsx",
+        "alias": "@/components/ui/popover.tsx",
+        "role": "component-ui",
+        "exports": [],
+        "imports": {
+          "internal": [
+            "src/lib/utils"
+          ],
+          "external": [
+            "react",
+            "@radix-ui/react-popover"
+          ]
+        },
+        "isCore": false,
+        "hash": "29a217781737bbf5",
+        "changed": false
+      },
+      {
+        "path": "src/components/ui/progress.tsx",
+        "alias": "@/components/ui/progress.tsx",
+        "role": "component-ui",
+        "exports": [],
+        "imports": {
+          "internal": [
+            "src/lib/utils"
+          ],
+          "external": [
+            "react",
+            "@radix-ui/react-progress"
+          ]
+        },
+        "isCore": false,
+        "hash": "e7a89220fb49e18d",
+        "changed": false
+      },
+      {
+        "path": "src/components/ui/protected-image.tsx",
+        "alias": "@/components/ui/protected-image.tsx",
+        "role": "component-ui",
+        "exports": [
+          "ProtectedImage"
+        ],
+        "imports": {
+          "internal": [],
+          "external": [
+            "react"
+          ]
+        },
+        "isCore": false,
+        "hash": "2d23c61d92d235b1",
+        "changed": false
+      },
+      {
+        "path": "src/components/ui/radio-group.tsx",
+        "alias": "@/components/ui/radio-group.tsx",
+        "role": "component-ui",
+        "exports": [],
+        "imports": {
+          "internal": [
+            "src/lib/utils"
+          ],
+          "external": [
+            "react",
+            "@radix-ui/react-radio-group",
+            "lucide-react"
+          ]
+        },
+        "isCore": false,
+        "hash": "b12ca5cef859dd75",
+        "changed": false
+      },
+      {
+        "path": "src/components/ui/resizable.tsx",
+        "alias": "@/components/ui/resizable.tsx",
+        "role": "component-ui",
+        "exports": [],
+        "imports": {
+          "internal": [
+            "src/lib/utils"
+          ],
+          "external": [
+            "react",
+            "lucide-react",
+            "react-resizable-panels"
+          ]
+        },
+        "isCore": false,
+        "hash": "41043c0f3dec3a41",
+        "changed": false
+      },
+      {
+        "path": "src/components/ui/scroll-area.tsx",
+        "alias": "@/components/ui/scroll-area.tsx",
+        "role": "component-ui",
+        "exports": [],
+        "imports": {
+          "internal": [
+            "src/lib/utils"
+          ],
+          "external": [
+            "react",
+            "@radix-ui/react-scroll-area"
+          ]
+        },
+        "isCore": false,
+        "hash": "1c5d0b242d051384",
+        "changed": false
+      },
+      {
+        "path": "src/components/ui/select.tsx",
+        "alias": "@/components/ui/select.tsx",
+        "role": "component-ui",
+        "exports": [],
+        "imports": {
+          "internal": [
+            "src/lib/utils"
+          ],
+          "external": [
+            "react",
+            "@radix-ui/react-select",
+            "lucide-react"
+          ]
+        },
+        "isCore": false,
+        "hash": "8795c9fac7c48d56",
+        "changed": false
+      },
+      {
+        "path": "src/components/ui/separator.tsx",
+        "alias": "@/components/ui/separator.tsx",
+        "role": "component-ui",
+        "exports": [],
+        "imports": {
+          "internal": [
+            "src/lib/utils"
+          ],
+          "external": [
+            "react",
+            "@radix-ui/react-separator"
+          ]
+        },
+        "isCore": false,
+        "hash": "e9dddbd8dbbc0ecc",
+        "changed": false
+      },
+      {
+        "path": "src/components/ui/sheet.tsx",
+        "alias": "@/components/ui/sheet.tsx",
+        "role": "component-ui",
+        "exports": [],
+        "imports": {
+          "internal": [
+            "src/lib/utils"
+          ],
+          "external": [
+            "react",
+            "@radix-ui/react-dialog",
+            "lucide-react"
+          ]
+        },
+        "isCore": false,
+        "hash": "3d6a560c635fd910",
+        "changed": false
+      },
+      {
+        "path": "src/components/ui/sidebar.tsx",
+        "alias": "@/components/ui/sidebar.tsx",
+        "role": "component-ui",
+        "exports": [],
+        "imports": {
+          "internal": [
+            "src/hooks/use-mobile",
+            "src/lib/utils",
+            "src/components/ui/button",
+            "src/components/ui/input",
+            "src/components/ui/separator",
+            "src/components/ui/sheet",
+            "src/components/ui/skeleton",
+            "src/components/ui/tooltip"
+          ],
+          "external": [
+            "react",
+            "@radix-ui/react-slot",
+            "class-variance-authority",
+            "lucide-react"
+          ]
+        },
+        "isCore": false,
+        "hash": "73561977bb06800b",
+        "changed": false
+      },
+      {
+        "path": "src/components/ui/skeleton.tsx",
+        "alias": "@/components/ui/skeleton.tsx",
+        "role": "component-ui",
+        "exports": [],
+        "imports": {
+          "internal": [
+            "src/lib/utils"
+          ],
+          "external": []
+        },
+        "isCore": false,
+        "hash": "f2aea81d8baf2b62",
+        "changed": false
+      },
+      {
+        "path": "src/components/ui/slider.tsx",
+        "alias": "@/components/ui/slider.tsx",
+        "role": "component-ui",
+        "exports": [],
+        "imports": {
+          "internal": [
+            "src/lib/utils"
+          ],
+          "external": [
+            "react",
+            "@radix-ui/react-slider"
+          ]
+        },
+        "isCore": false,
+        "hash": "55140ef92c201c82",
+        "changed": false
+      },
+      {
+        "path": "src/components/ui/sonner.tsx",
+        "alias": "@/components/ui/sonner.tsx",
+        "role": "component-ui",
+        "exports": [],
+        "imports": {
+          "internal": [],
+          "external": [
+            "next-themes",
+            "sonner"
+          ]
+        },
+        "isCore": false,
+        "hash": "958d33cd8a852937",
+        "changed": false
+      },
+      {
+        "path": "src/components/ui/switch.tsx",
+        "alias": "@/components/ui/switch.tsx",
+        "role": "component-ui",
+        "exports": [],
+        "imports": {
+          "internal": [
+            "src/lib/utils"
+          ],
+          "external": [
+            "react",
+            "@radix-ui/react-switch"
+          ]
+        },
+        "isCore": false,
+        "hash": "17f2390d98e8ce4d",
+        "changed": false
+      },
+      {
+        "path": "src/components/ui/table.tsx",
+        "alias": "@/components/ui/table.tsx",
+        "role": "component-ui",
+        "exports": [],
+        "imports": {
+          "internal": [
+            "src/lib/utils"
+          ],
+          "external": [
+            "react"
+          ]
+        },
+        "isCore": false,
+        "hash": "7b8c7a952cf49e78",
+        "changed": false
+      },
+      {
+        "path": "src/components/ui/tabs.tsx",
+        "alias": "@/components/ui/tabs.tsx",
+        "role": "component-ui",
+        "exports": [],
+        "imports": {
+          "internal": [
+            "src/lib/utils"
+          ],
+          "external": [
+            "react",
+            "@radix-ui/react-tabs"
+          ]
+        },
+        "isCore": false,
+        "hash": "e8469e599381cf02",
+        "changed": false
+      },
+      {
+        "path": "src/components/ui/textarea.tsx",
+        "alias": "@/components/ui/textarea.tsx",
+        "role": "component-ui",
+        "exports": [],
+        "imports": {
+          "internal": [
+            "src/lib/utils"
+          ],
+          "external": [
+            "react"
+          ]
+        },
+        "isCore": false,
+        "hash": "de4e9fb0fd8e8ed1",
+        "changed": false
+      },
+      {
+        "path": "src/components/ui/toast.tsx",
+        "alias": "@/components/ui/toast.tsx",
+        "role": "component-ui",
+        "exports": [],
+        "imports": {
+          "internal": [
+            "src/lib/utils"
+          ],
+          "external": [
+            "react",
+            "@radix-ui/react-toast",
+            "class-variance-authority",
+            "lucide-react"
+          ]
+        },
+        "isCore": false,
+        "hash": "45d3d86ddb0b098a",
+        "changed": false
+      },
+      {
+        "path": "src/components/ui/toaster.tsx",
+        "alias": "@/components/ui/toaster.tsx",
+        "role": "component-ui",
+        "exports": [
+          "Toaster"
+        ],
+        "imports": {
+          "internal": [
+            "src/hooks/use-toast",
+            "src/components/ui/toast"
+          ],
+          "external": []
+        },
+        "isCore": false,
+        "hash": "e4957974d6393d08",
+        "changed": false
+      },
+      {
+        "path": "src/components/ui/toggle-group.tsx",
+        "alias": "@/components/ui/toggle-group.tsx",
+        "role": "component-ui",
+        "exports": [],
+        "imports": {
+          "internal": [
+            "src/lib/utils",
+            "src/components/ui/toggle"
+          ],
+          "external": [
+            "react",
+            "@radix-ui/react-toggle-group",
+            "class-variance-authority"
+          ]
+        },
+        "isCore": false,
+        "hash": "09eebce0dcbac76f",
+        "changed": false
+      },
+      {
+        "path": "src/components/ui/toggle.tsx",
+        "alias": "@/components/ui/toggle.tsx",
+        "role": "component-ui",
+        "exports": [],
+        "imports": {
+          "internal": [
+            "src/lib/utils"
+          ],
+          "external": [
+            "react",
+            "@radix-ui/react-toggle",
+            "class-variance-authority"
+          ]
+        },
+        "isCore": false,
+        "hash": "b201563ea8cdef36",
+        "changed": false
+      },
+      {
+        "path": "src/components/ui/tooltip.tsx",
+        "alias": "@/components/ui/tooltip.tsx",
+        "role": "component-ui",
+        "exports": [],
+        "imports": {
+          "internal": [
+            "src/lib/utils"
+          ],
+          "external": [
+            "react",
+            "@radix-ui/react-tooltip"
+          ]
+        },
+        "isCore": false,
+        "hash": "8d8a3645f547334b",
+        "changed": false
+      }
+    ],
+    "components": [
+      {
+        "path": "src/components/error-boundary.tsx",
+        "alias": "@/components/error-boundary.tsx",
+        "role": "component",
+        "exports": [
+          "ErrorBoundary"
+        ],
+        "imports": {
+          "internal": [],
+          "external": [
+            "react"
+          ]
+        },
+        "isCore": false,
+        "hash": "2caa68f80a70e1c1",
+        "changed": false
+      },
+      {
+        "path": "src/components/theme-provider.tsx",
+        "alias": "@/components/theme-provider.tsx",
+        "role": "component",
+        "exports": [
+          "ThemeProvider"
+        ],
+        "imports": {
+          "internal": [],
+          "external": [
+            "next-themes"
+          ]
+        },
+        "isCore": false,
+        "hash": "83e5e1a2f9b36b74",
+        "changed": false
+      }
+    ],
+    "hooks": [
+      {
+        "path": "src/hooks/use-in-view.ts",
+        "alias": "@/hooks/use-in-view.ts",
+        "role": "hook",
+        "exports": [
+          "useInView"
+        ],
+        "imports": {
+          "internal": [],
+          "external": [
+            "react"
+          ]
+        },
+        "isCore": false,
+        "hash": "914328a8f555b6fc",
+        "changed": false
+      },
+      {
+        "path": "src/hooks/use-media-session.ts",
+        "alias": "@/hooks/use-media-session.ts",
+        "role": "hook",
+        "exports": [
+          "useMediaSession",
+          "getEmbedSrc"
+        ],
+        "imports": {
+          "internal": [
+            "src/stores/audio-store"
+          ],
+          "external": [
+            "react"
+          ]
+        },
+        "isCore": false,
+        "hash": "33abcf0575bf504e",
+        "changed": false
+      },
+      {
+        "path": "src/hooks/use-mobile.ts",
+        "alias": "@/hooks/use-mobile.ts",
+        "role": "hook",
+        "exports": [
+          "useIsMobile"
+        ],
+        "imports": {
+          "internal": [],
+          "external": [
+            "react"
+          ]
+        },
+        "isCore": false,
+        "hash": "ad0936f84f1df79d",
+        "changed": false
+      },
+      {
+        "path": "src/hooks/use-toast.ts",
+        "alias": "@/hooks/use-toast.ts",
+        "role": "hook",
+        "exports": [
+          "reducer"
+        ],
+        "imports": {
+          "internal": [
+            "src/components/ui/toast"
+          ],
+          "external": [
+            "react"
+          ]
+        },
+        "isCore": false,
+        "hash": "12f8fcd1101acdd4",
+        "changed": false
+      }
+    ],
+    "stores": [
+      {
+        "path": "src/stores/audio-store.ts",
+        "alias": "@/stores/audio-store.ts",
+        "role": "store",
+        "exports": [
+          "TrackSource",
+          "AudioTrack",
+          "RepeatMode",
+          "AudioStore",
+          "useAudioStore"
+        ],
+        "imports": {
+          "internal": [],
+          "external": [
+            "zustand"
+          ]
+        },
+        "isCore": true,
+        "hash": "a98f1f62646dba7f",
+        "changed": false
+      }
+    ],
+    "lib": [
+      {
+        "path": "src/lib/db.ts",
+        "alias": "@/lib/db.ts",
+        "role": "lib",
+        "exports": [
+          "db",
+          "isDatabaseEnabled",
+          "isDatabaseConfigured"
+        ],
+        "imports": {
+          "internal": [],
+          "external": [
+            "node:path",
+            "@prisma/client"
+          ]
+        },
+        "isCore": true,
+        "hash": "28dac9772e711d4c",
+        "changed": false
+      },
+      {
+        "path": "src/lib/env.ts",
+        "alias": "@/lib/env.ts",
+        "role": "lib",
+        "exports": [
+          "validateEnv"
+        ],
+        "imports": {
+          "internal": [],
+          "external": []
+        },
+        "isCore": true,
+        "hash": "df1b68a3a3f63c68",
+        "changed": false
+      },
+      {
+        "path": "src/lib/rate-limit.ts",
+        "alias": "@/lib/rate-limit.ts",
+        "role": "lib",
+        "exports": [
+          "rateLimit"
+        ],
+        "imports": {
+          "internal": [],
+          "external": []
+        },
+        "isCore": true,
+        "hash": "0b645d4a81cf642f",
+        "changed": false
+      },
+      {
+        "path": "src/lib/resend.ts",
+        "alias": "@/lib/resend.ts",
+        "role": "lib",
+        "exports": [
+          "isResendConfigured",
+          "getResendClient"
+        ],
+        "imports": {
+          "internal": [],
+          "external": [
+            "resend"
+          ]
+        },
+        "isCore": false,
+        "hash": "68694eb04ea55c77",
+        "changed": false
+      },
+      {
+        "path": "src/lib/site-data.ts",
+        "alias": "@/lib/site-data.ts",
+        "role": "lib",
+        "exports": [
+          "NavLink",
+          "Mix",
+          "HearThisTrack",
+          "Video",
+          "SocialLink",
+          "Stat",
+          "Feature",
+          "NAV_LINKS",
+          "MIXES",
+          "FEATURED_VIDEO",
+          "MORE_VIDEOS",
+          "SOCIAL_LINKS",
+          "STATS",
+          "GENRE_TAGS",
+          "ABOUT_FEATURES",
+          "EVENT_TYPES",
+          "CONTACT_EMAIL",
+          "HEARTHIS_TRACKS",
+          "PHOTOS"
+        ],
+        "imports": {
+          "internal": [],
+          "external": [
+            "lucide-react"
+          ]
+        },
+        "isCore": false,
+        "hash": "4d4245ef81a06770",
+        "changed": false
+      },
+      {
+        "path": "src/lib/utils.ts",
+        "alias": "@/lib/utils.ts",
+        "role": "lib",
+        "exports": [
+          "cn"
+        ],
+        "imports": {
+          "internal": [],
+          "external": [
+            "clsx",
+            "tailwind-merge"
+          ]
+        },
+        "isCore": false,
+        "hash": "7c8c3dfc0cdd370d",
+        "changed": false
+      }
+    ]
+  },
+  "dependencies": {
+    "graph": {
+      "eslint.config.mjs": [],
+      "examples/websocket/frontend.tsx": [],
+      "examples/websocket/server.ts": [],
+      "keep-alive.mjs": [],
+      "next.config.ts": [],
+      "postcss.config.mjs": [],
+      "scripts/generate-architecture-map.mjs": [],
+      "scripts/generate-codebase-map.mjs": [],
+      "scripts/health-build.mjs": [],
+      "scripts/health-check.mjs": [],
+      "scripts/health-setup.mjs": [],
+      "scripts/install-hooks.mjs": [],
+      "scripts/update-readme-major.mjs": [],
+      "src/app/api/booking/route.ts": [
+        "src/lib/db",
+        "src/lib/rate-limit",
+        "src/lib/resend"
+      ],
+      "src/app/api/health/route.ts": [
+        "src/lib/db",
+        "src/lib/resend"
+      ],
+      "src/app/api/mixcloud-url/route.ts": [],
+      "src/app/api/route.ts": [],
+      "src/app/api/webhooks/inbound/route.ts": [
+        "src/lib/resend"
+      ],
+      "src/app/layout.tsx": [
+        "src/app/globals.css",
+        "src/components/ui/toaster",
+        "src/components/theme-provider"
+      ],
+      "src/app/loading.tsx": [],
+      "src/app/page.tsx": [
+        "src/components/error-boundary",
+        "src/components/site/navigation",
+        "src/components/site/hero",
+        "src/components/site/about",
+        "src/components/site/music",
+        "src/components/site/videos",
+        "src/components/site/photos",
+        "src/components/site/bookings",
+        "src/components/site/footer",
+        "src/components/site/global-player",
+        "src/components/site/page-padding"
+      ],
+      "src/components/error-boundary.tsx": [],
+      "src/components/site/about.tsx": [
+        "src/hooks/use-in-view",
+        "src/lib/site-data"
+      ],
+      "src/components/site/bookings.tsx": [
+        "src/components/ui/button",
+        "src/components/ui/input",
+        "src/components/ui/label",
+        "src/components/ui/textarea",
+        "src/components/ui/select",
+        "src/hooks/use-toast",
+        "src/hooks/use-in-view",
+        "src/lib/site-data"
+      ],
+      "src/components/site/footer.tsx": [
+        "src/lib/site-data"
+      ],
+      "src/components/site/global-player.tsx": [
+        "src/stores/audio-store"
+      ],
+      "src/components/site/hero.tsx": [
+        "src/lib/site-data"
+      ],
+      "src/components/site/index.ts": [
+        "src/components/site/navigation",
+        "src/components/site/hero",
+        "src/components/site/about",
+        "src/components/site/music",
+        "src/components/site/videos",
+        "src/components/site/bookings",
+        "src/components/site/photos",
+        "src/components/site/footer",
+        "src/components/site/global-player",
+        "src/components/site/page-padding",
+        "src/components/site/lazy-youtube"
+      ],
+      "src/components/site/lazy-youtube.tsx": [],
+      "src/components/site/music.tsx": [
+        "src/hooks/use-in-view",
+        "src/stores/audio-store",
+        "src/lib/site-data"
+      ],
+      "src/components/site/navigation.tsx": [
+        "src/lib/site-data"
+      ],
+      "src/components/site/page-padding.tsx": [
+        "src/stores/audio-store"
+      ],
+      "src/components/site/photos.tsx": [
+        "src/hooks/use-in-view",
+        "src/lib/site-data",
+        "src/components/ui/protected-image"
+      ],
+      "src/components/site/videos.tsx": [
+        "src/hooks/use-in-view",
+        "src/stores/audio-store",
+        "src/lib/site-data",
+        "src/components/site/lazy-youtube"
+      ],
+      "src/components/theme-provider.tsx": [],
+      "src/components/ui/accordion.tsx": [
+        "src/lib/utils"
+      ],
+      "src/components/ui/alert-dialog.tsx": [
+        "src/lib/utils",
+        "src/components/ui/button"
+      ],
+      "src/components/ui/alert.tsx": [
+        "src/lib/utils"
+      ],
+      "src/components/ui/aspect-ratio.tsx": [],
+      "src/components/ui/avatar.tsx": [
+        "src/lib/utils"
+      ],
+      "src/components/ui/badge.tsx": [
+        "src/lib/utils"
+      ],
+      "src/components/ui/breadcrumb.tsx": [
+        "src/lib/utils"
+      ],
+      "src/components/ui/button.tsx": [
+        "src/lib/utils"
+      ],
+      "src/components/ui/calendar.tsx": [
+        "src/lib/utils",
+        "src/components/ui/button"
+      ],
+      "src/components/ui/card.tsx": [
+        "src/lib/utils"
+      ],
+      "src/components/ui/carousel.tsx": [
+        "src/lib/utils",
+        "src/components/ui/button"
+      ],
+      "src/components/ui/chart.tsx": [
+        "src/lib/utils"
+      ],
+      "src/components/ui/checkbox.tsx": [
+        "src/lib/utils"
+      ],
+      "src/components/ui/collapsible.tsx": [],
+      "src/components/ui/command.tsx": [
+        "src/lib/utils",
+        "src/components/ui/dialog"
+      ],
+      "src/components/ui/context-menu.tsx": [
+        "src/lib/utils"
+      ],
+      "src/components/ui/dialog.tsx": [
+        "src/lib/utils"
+      ],
+      "src/components/ui/drawer.tsx": [
+        "src/lib/utils"
+      ],
+      "src/components/ui/dropdown-menu.tsx": [
+        "src/lib/utils"
+      ],
+      "src/components/ui/form.tsx": [
+        "src/lib/utils",
+        "src/components/ui/label"
+      ],
+      "src/components/ui/hover-card.tsx": [
+        "src/lib/utils"
+      ],
+      "src/components/ui/input-otp.tsx": [
+        "src/lib/utils"
+      ],
+      "src/components/ui/input.tsx": [
+        "src/lib/utils"
+      ],
+      "src/components/ui/label.tsx": [
+        "src/lib/utils"
+      ],
+      "src/components/ui/menubar.tsx": [
+        "src/lib/utils"
+      ],
+      "src/components/ui/navigation-menu.tsx": [
+        "src/lib/utils"
+      ],
+      "src/components/ui/pagination.tsx": [
+        "src/lib/utils",
+        "src/components/ui/button"
+      ],
+      "src/components/ui/popover.tsx": [
+        "src/lib/utils"
+      ],
+      "src/components/ui/progress.tsx": [
+        "src/lib/utils"
+      ],
+      "src/components/ui/protected-image.tsx": [],
+      "src/components/ui/radio-group.tsx": [
+        "src/lib/utils"
+      ],
+      "src/components/ui/resizable.tsx": [
+        "src/lib/utils"
+      ],
+      "src/components/ui/scroll-area.tsx": [
+        "src/lib/utils"
+      ],
+      "src/components/ui/select.tsx": [
+        "src/lib/utils"
+      ],
+      "src/components/ui/separator.tsx": [
+        "src/lib/utils"
+      ],
+      "src/components/ui/sheet.tsx": [
+        "src/lib/utils"
+      ],
+      "src/components/ui/sidebar.tsx": [
+        "src/hooks/use-mobile",
+        "src/lib/utils",
+        "src/components/ui/button",
+        "src/components/ui/input",
+        "src/components/ui/separator",
+        "src/components/ui/sheet",
+        "src/components/ui/skeleton",
+        "src/components/ui/tooltip"
+      ],
+      "src/components/ui/skeleton.tsx": [
+        "src/lib/utils"
+      ],
+      "src/components/ui/slider.tsx": [
+        "src/lib/utils"
+      ],
+      "src/components/ui/sonner.tsx": [],
+      "src/components/ui/switch.tsx": [
+        "src/lib/utils"
+      ],
+      "src/components/ui/table.tsx": [
+        "src/lib/utils"
+      ],
+      "src/components/ui/tabs.tsx": [
+        "src/lib/utils"
+      ],
+      "src/components/ui/textarea.tsx": [
+        "src/lib/utils"
+      ],
+      "src/components/ui/toast.tsx": [
+        "src/lib/utils"
+      ],
+      "src/components/ui/toaster.tsx": [
+        "src/hooks/use-toast",
+        "src/components/ui/toast"
+      ],
+      "src/components/ui/toggle-group.tsx": [
+        "src/lib/utils",
+        "src/components/ui/toggle"
+      ],
+      "src/components/ui/toggle.tsx": [
+        "src/lib/utils"
+      ],
+      "src/components/ui/tooltip.tsx": [
+        "src/lib/utils"
+      ],
+      "src/hooks/use-in-view.ts": [],
+      "src/hooks/use-media-session.ts": [
+        "src/stores/audio-store"
+      ],
+      "src/hooks/use-mobile.ts": [],
+      "src/hooks/use-toast.ts": [
+        "src/components/ui/toast"
+      ],
+      "src/lib/db.ts": [],
+      "src/lib/env.ts": [],
+      "src/lib/rate-limit.ts": [],
+      "src/lib/resend.ts": [],
+      "src/lib/site-data.ts": [],
+      "src/lib/utils.ts": [],
+      "src/stores/audio-store.ts": [],
+      "tailwind.config.ts": []
+    },
+    "reverseGraph": {
+      "src/lib/db": [
+        "src/app/api/booking/route.ts",
+        "src/app/api/health/route.ts"
+      ],
+      "src/lib/rate-limit": [
+        "src/app/api/booking/route.ts"
+      ],
+      "src/lib/resend": [
+        "src/app/api/booking/route.ts",
+        "src/app/api/health/route.ts",
+        "src/app/api/webhooks/inbound/route.ts"
+      ],
+      "src/app/globals.css": [
+        "src/app/layout.tsx"
+      ],
+      "src/components/ui/toaster": [
+        "src/app/layout.tsx"
+      ],
+      "src/components/theme-provider": [
+        "src/app/layout.tsx"
+      ],
+      "src/components/error-boundary": [
+        "src/app/page.tsx"
+      ],
+      "src/components/site/navigation": [
+        "src/app/page.tsx",
+        "src/components/site/index.ts"
+      ],
+      "src/components/site/hero": [
+        "src/app/page.tsx",
+        "src/components/site/index.ts"
+      ],
+      "src/components/site/about": [
+        "src/app/page.tsx",
+        "src/components/site/index.ts"
+      ],
+      "src/components/site/music": [
+        "src/app/page.tsx",
+        "src/components/site/index.ts"
+      ],
+      "src/components/site/videos": [
+        "src/app/page.tsx",
+        "src/components/site/index.ts"
+      ],
+      "src/components/site/photos": [
+        "src/app/page.tsx",
+        "src/components/site/index.ts"
+      ],
+      "src/components/site/bookings": [
+        "src/app/page.tsx",
+        "src/components/site/index.ts"
+      ],
+      "src/components/site/footer": [
+        "src/app/page.tsx",
+        "src/components/site/index.ts"
+      ],
+      "src/components/site/global-player": [
+        "src/app/page.tsx",
+        "src/components/site/index.ts"
+      ],
+      "src/components/site/page-padding": [
+        "src/app/page.tsx",
+        "src/components/site/index.ts"
+      ],
+      "src/hooks/use-in-view": [
+        "src/components/site/about.tsx",
+        "src/components/site/bookings.tsx",
+        "src/components/site/music.tsx",
+        "src/components/site/photos.tsx",
+        "src/components/site/videos.tsx"
+      ],
+      "src/lib/site-data": [
+        "src/components/site/about.tsx",
+        "src/components/site/bookings.tsx",
+        "src/components/site/footer.tsx",
+        "src/components/site/hero.tsx",
+        "src/components/site/music.tsx",
+        "src/components/site/navigation.tsx",
+        "src/components/site/photos.tsx",
+        "src/components/site/videos.tsx"
+      ],
+      "src/components/ui/button": [
+        "src/components/site/bookings.tsx",
+        "src/components/ui/alert-dialog.tsx",
+        "src/components/ui/calendar.tsx",
+        "src/components/ui/carousel.tsx",
+        "src/components/ui/pagination.tsx",
+        "src/components/ui/sidebar.tsx"
+      ],
+      "src/components/ui/input": [
+        "src/components/site/bookings.tsx",
+        "src/components/ui/sidebar.tsx"
+      ],
+      "src/components/ui/label": [
+        "src/components/site/bookings.tsx",
+        "src/components/ui/form.tsx"
+      ],
+      "src/components/ui/textarea": [
+        "src/components/site/bookings.tsx"
+      ],
+      "src/components/ui/select": [
+        "src/components/site/bookings.tsx"
+      ],
+      "src/hooks/use-toast": [
+        "src/components/site/bookings.tsx",
+        "src/components/ui/toaster.tsx"
+      ],
+      "src/stores/audio-store": [
+        "src/components/site/global-player.tsx",
+        "src/components/site/music.tsx",
+        "src/components/site/page-padding.tsx",
+        "src/components/site/videos.tsx",
+        "src/hooks/use-media-session.ts"
+      ],
+      "src/components/site/lazy-youtube": [
+        "src/components/site/index.ts",
+        "src/components/site/videos.tsx"
+      ],
+      "src/components/ui/protected-image": [
+        "src/components/site/photos.tsx"
+      ],
+      "src/lib/utils": [
+        "src/components/ui/accordion.tsx",
+        "src/components/ui/alert-dialog.tsx",
+        "src/components/ui/alert.tsx",
+        "src/components/ui/avatar.tsx",
+        "src/components/ui/badge.tsx",
+        "src/components/ui/breadcrumb.tsx",
+        "src/components/ui/button.tsx",
+        "src/components/ui/calendar.tsx",
+        "src/components/ui/card.tsx",
+        "src/components/ui/carousel.tsx",
+        "src/components/ui/chart.tsx",
+        "src/components/ui/checkbox.tsx",
+        "src/components/ui/command.tsx",
+        "src/components/ui/context-menu.tsx",
+        "src/components/ui/dialog.tsx",
+        "src/components/ui/drawer.tsx",
+        "src/components/ui/dropdown-menu.tsx",
+        "src/components/ui/form.tsx",
+        "src/components/ui/hover-card.tsx",
+        "src/components/ui/input-otp.tsx",
+        "src/components/ui/input.tsx",
+        "src/components/ui/label.tsx",
+        "src/components/ui/menubar.tsx",
+        "src/components/ui/navigation-menu.tsx",
+        "src/components/ui/pagination.tsx",
+        "src/components/ui/popover.tsx",
+        "src/components/ui/progress.tsx",
+        "src/components/ui/radio-group.tsx",
+        "src/components/ui/resizable.tsx",
+        "src/components/ui/scroll-area.tsx",
+        "src/components/ui/select.tsx",
+        "src/components/ui/separator.tsx",
+        "src/components/ui/sheet.tsx",
+        "src/components/ui/sidebar.tsx",
+        "src/components/ui/skeleton.tsx",
+        "src/components/ui/slider.tsx",
+        "src/components/ui/switch.tsx",
+        "src/components/ui/table.tsx",
+        "src/components/ui/tabs.tsx",
+        "src/components/ui/textarea.tsx",
+        "src/components/ui/toast.tsx",
+        "src/components/ui/toggle-group.tsx",
+        "src/components/ui/toggle.tsx",
+        "src/components/ui/tooltip.tsx"
+      ],
+      "src/components/ui/dialog": [
+        "src/components/ui/command.tsx"
+      ],
+      "src/hooks/use-mobile": [
+        "src/components/ui/sidebar.tsx"
+      ],
+      "src/components/ui/separator": [
+        "src/components/ui/sidebar.tsx"
+      ],
+      "src/components/ui/sheet": [
+        "src/components/ui/sidebar.tsx"
+      ],
+      "src/components/ui/skeleton": [
+        "src/components/ui/sidebar.tsx"
+      ],
+      "src/components/ui/tooltip": [
+        "src/components/ui/sidebar.tsx"
+      ],
+      "src/components/ui/toast": [
+        "src/components/ui/toaster.tsx",
+        "src/hooks/use-toast.ts"
+      ],
+      "src/components/ui/toggle": [
+        "src/components/ui/toggle-group.tsx"
+      ]
+    },
+    "externalPackages": [
+      {
+        "pkg": "react",
+        "usages": 56
+      },
+      {
+        "pkg": "lucide-react",
+        "usages": 30
+      },
+      {
+        "pkg": "framer-motion",
+        "usages": 8
+      },
+      {
+        "pkg": "class-variance-authority",
+        "usages": 8
+      },
+      {
+        "pkg": "next",
+        "usages": 6
+      },
+      {
+        "pkg": "@radix-ui/react-slot",
+        "usages": 5
+      },
+      {
+        "pkg": "next-themes",
+        "usages": 3
+      },
+      {
+        "pkg": "@prisma/client",
+        "usages": 2
+      },
+      {
+        "pkg": "@radix-ui/react-dialog",
+        "usages": 2
+      },
+      {
+        "pkg": "@radix-ui/react-label",
+        "usages": 2
+      },
+      {
+        "pkg": "zod",
+        "usages": 1
+      },
+      {
+        "pkg": "child_process",
+        "usages": 1
+      },
+      {
+        "pkg": "util",
+        "usages": 1
+      },
+      {
+        "pkg": "path",
+        "usages": 1
+      },
+      {
+        "pkg": "svix",
+        "usages": 1
+      },
+      {
+        "pkg": "@vercel/analytics",
+        "usages": 1
+      },
+      {
+        "pkg": "@radix-ui/react-accordion",
+        "usages": 1
+      },
+      {
+        "pkg": "@radix-ui/react-alert-dialog",
+        "usages": 1
+      },
+      {
+        "pkg": "@radix-ui/react-aspect-ratio",
+        "usages": 1
+      },
+      {
+        "pkg": "@radix-ui/react-avatar",
+        "usages": 1
+      },
+      {
+        "pkg": "react-day-picker",
+        "usages": 1
+      },
+      {
+        "pkg": "embla-carousel-react",
+        "usages": 1
+      },
+      {
+        "pkg": "recharts",
+        "usages": 1
+      },
+      {
+        "pkg": "@radix-ui/react-checkbox",
+        "usages": 1
+      },
+      {
+        "pkg": "@radix-ui/react-collapsible",
+        "usages": 1
+      },
+      {
+        "pkg": "cmdk",
+        "usages": 1
+      },
+      {
+        "pkg": "@radix-ui/react-context-menu",
+        "usages": 1
+      },
+      {
+        "pkg": "vaul",
+        "usages": 1
+      },
+      {
+        "pkg": "@radix-ui/react-dropdown-menu",
+        "usages": 1
+      },
+      {
+        "pkg": "react-hook-form",
+        "usages": 1
+      },
+      {
+        "pkg": "@radix-ui/react-hover-card",
+        "usages": 1
+      },
+      {
+        "pkg": "input-otp",
+        "usages": 1
+      },
+      {
+        "pkg": "@radix-ui/react-menubar",
+        "usages": 1
+      },
+      {
+        "pkg": "@radix-ui/react-navigation-menu",
+        "usages": 1
+      },
+      {
+        "pkg": "@radix-ui/react-popover",
+        "usages": 1
+      },
+      {
+        "pkg": "@radix-ui/react-progress",
+        "usages": 1
+      },
+      {
+        "pkg": "@radix-ui/react-radio-group",
+        "usages": 1
+      },
+      {
+        "pkg": "react-resizable-panels",
+        "usages": 1
+      },
+      {
+        "pkg": "@radix-ui/react-scroll-area",
+        "usages": 1
+      },
+      {
+        "pkg": "@radix-ui/react-select",
+        "usages": 1
+      },
+      {
+        "pkg": "@radix-ui/react-separator",
+        "usages": 1
+      },
+      {
+        "pkg": "@radix-ui/react-slider",
+        "usages": 1
+      },
+      {
+        "pkg": "sonner",
+        "usages": 1
+      },
+      {
+        "pkg": "@radix-ui/react-switch",
+        "usages": 1
+      },
+      {
+        "pkg": "@radix-ui/react-tabs",
+        "usages": 1
+      },
+      {
+        "pkg": "@radix-ui/react-toast",
+        "usages": 1
+      },
+      {
+        "pkg": "@radix-ui/react-toggle-group",
+        "usages": 1
+      },
+      {
+        "pkg": "@radix-ui/react-toggle",
+        "usages": 1
+      },
+      {
+        "pkg": "@radix-ui/react-tooltip",
+        "usages": 1
+      },
+      {
+        "pkg": "node:path",
+        "usages": 1
+      },
+      {
+        "pkg": "resend",
+        "usages": 1
+      },
+      {
+        "pkg": "clsx",
+        "usages": 1
+      },
+      {
+        "pkg": "tailwind-merge",
+        "usages": 1
+      },
+      {
+        "pkg": "zustand",
+        "usages": 1
+      }
+    ]
+  },
+  "hotspots": [
+    {
+      "file": "package.json",
+      "commitCount": 6
+    },
+    {
+      "file": "package-lock.json",
+      "commitCount": 5
+    },
+    {
+      "file": "README.md",
+      "commitCount": 5
+    },
+    {
+      "file": "src/components/site/music.tsx",
+      "commitCount": 5
+    },
+    {
+      "file": "src/app/layout.tsx",
+      "commitCount": 4
+    },
+    {
+      "file": "docs/.map-state.json",
+      "commitCount": 4
+    },
+    {
+      "file": "docs/codebase-map.json",
+      "commitCount": 4
+    },
+    {
+      "file": "docs/codebase-map.md",
+      "commitCount": 4
+    },
+    {
+      "file": "src/lib/resend.ts",
+      "commitCount": 3
+    },
+    {
+      "file": "src/app/api/webhooks/inbound/route.ts",
+      "commitCount": 3
+    },
+    {
+      "file": ".gitignore",
+      "commitCount": 3
+    },
+    {
+      "file": "dj-kimchi",
+      "commitCount": 3
+    },
+    {
+      "file": "src/lib/site-data.ts",
+      "commitCount": 2
+    },
+    {
+      "file": "scripts/generate-architecture-map.mjs",
+      "commitCount": 2
+    },
+    {
+      "file": "scripts/generate-codebase-map.mjs",
+      "commitCount": 2
+    }
+  ],
+  "riskFlags": [],
+  "changedFiles": [
+    "src/app/layout.tsx"
+  ]
+}

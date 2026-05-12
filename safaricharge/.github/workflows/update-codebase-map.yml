@@ -1,0 +1,93 @@
+name: Update Codebase Map
+
+on:
+  push:
+    branches: ['**']
+    paths-ignore:
+      - 'CODEBASE_MAP.md'
+      - 'README.md'
+      - 'ROLLBACK.md'
+      - '.github/**'
+  workflow_dispatch:
+  schedule:
+    - cron: '27 3 * * *'
+
+# One run at a time per branch; cancel any queued duplicate.
+concurrency:
+  group: update-codebase-map-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  update-map:
+    name: Regenerate CODEBASE_MAP.md
+    if: github.ref_name == 'main' || github.event_name == 'workflow_dispatch' || github.event_name == 'schedule'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    env:
+      FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: 'true'
+      DEFAULT_BRANCH: main
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          ref: main
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.x'
+
+      - name: Install tree
+        run: |
+          sudo apt-get update || true
+          sudo apt-get install -y tree > /dev/null 2>&1 || true
+
+      - name: Collect metadata
+        id: meta
+        run: |
+          echo "total_ts=$(find src -name '*.ts' -o -name '*.tsx' | wc -l | tr -d ' ')"        >> $GITHUB_OUTPUT
+          echo "total_py=$(find . -name '*.py' ! -path '*/node_modules/*' | wc -l | tr -d ' ')" >> $GITHUB_OUTPUT
+          echo "last_commit=$(git log -1 --no-decorate --format='%H' HEAD)"                    >> $GITHUB_OUTPUT
+          echo "last_author=$(git log -1 --no-decorate --format='%an' HEAD)"                   >> $GITHUB_OUTPUT
+          echo "last_date=$(git log -1 --no-decorate --date=short --format='%ad' HEAD)"        >> $GITHUB_OUTPUT
+          echo "branch=$(git rev-parse --abbrev-ref HEAD)"                                     >> $GITHUB_OUTPUT
+
+      - name: Rebuild CODEBASE_MAP.md
+        env:
+          TOTAL_TS:    ${{ steps.meta.outputs.total_ts }}
+          TOTAL_PY:    ${{ steps.meta.outputs.total_py }}
+          LAST_COMMIT: ${{ steps.meta.outputs.last_commit }}
+          LAST_AUTHOR: ${{ steps.meta.outputs.last_author }}
+          LAST_DATE:   ${{ steps.meta.outputs.last_date }}
+          BRANCH:      ${{ steps.meta.outputs.branch }}
+        run: python3 .github/scripts/gen_codebase_map.py
+
+      - name: Commit and push CODEBASE_MAP.md
+        run: |
+          git config user.name  'github-actions[bot]'
+          git config user.email 'github-actions[bot]@users.noreply.github.com'
+          git add CODEBASE_MAP.md
+          if git diff --cached --quiet; then
+            echo 'No changes — skipping'
+            exit 0
+          fi
+          for i in 1 2 3 4 5; do
+            echo "Push attempt ${i}"
+            git fetch origin "$DEFAULT_BRANCH"
+            git reset --hard "origin/$DEFAULT_BRANCH"
+            python3 .github/scripts/gen_codebase_map.py
+            git add CODEBASE_MAP.md
+            if git diff --cached --quiet; then
+              echo 'No changes after sync — skipping'
+              exit 0
+            fi
+            git commit -m 'docs(auto): regenerate CODEBASE_MAP.md [skip ci]'
+            git push origin "$DEFAULT_BRANCH" && exit 0
+            echo "Push rejected — retrying in 3s"
+            sleep 3
+          done
+          echo 'All push attempts failed; skipping hard failure to keep automation non-blocking'
+          exit 0
